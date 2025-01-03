@@ -28,6 +28,7 @@ return {
     config = function()
         -- You don't need to set these options.
         require("colorful-menu").setup({
+         ft = {
             lua = {
                 -- Maybe you want to dim arguments a bit.
                 auguments_hl = "@comment",
@@ -44,7 +45,8 @@ return {
             c = {
                 -- such as "From <stdio.h>"
                 extra_info_hl = "@comment",
-            },
+            }
+       },
             -- If the built-in logic fails to find a suitable highlight group,
             -- this highlight is applied to the label.
             fallback_highlight = "@variable",
