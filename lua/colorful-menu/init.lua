@@ -203,6 +203,12 @@ function M._rust_compute_completion_highlights(completion_item, ft)
 		local source = string.format("let %s = ();", text)
 		return M.highlight_range(source, ft, 4, 4 + #text)
 	elseif (kind == M.Kind.Function or kind == M.Kind.Method) and detail then
+		local pattern = "%((.-)%)"
+		local result = string.match(completion_item.label, pattern)
+		local label = completion_item.label
+		if not result then
+			label = completion_item.label .. "()"
+		end
 		local regex_pattern = "%b()"
 		local prefix, suffix = string.match(function_signature, "^(.*fn)(.*)$")
 		if prefix ~= nil and suffix ~= nil then
@@ -211,10 +217,10 @@ function M._rust_compute_completion_highlights(completion_item, ft)
 				suffix = suffix:sub(start_pos, #suffix)
 			end
 			-- Replace the regex pattern in completion.label with the suffix
-			local text, num_subs = string.gsub(completion_item.label, regex_pattern, suffix, 1)
+			local text, num_subs = string.gsub(label, regex_pattern, suffix, 1)
 			-- If no substitution occurred, use the original label
 			if num_subs == 0 then
-				text = completion_item.label
+				text = label
 			end
 
 			-- Construct the fake source string as in Rust

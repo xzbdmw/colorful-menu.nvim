@@ -20,7 +20,6 @@ vim.opt.runtimepath:prepend(lazypath)
 local plugins = {
 	-- do not remove the colorscheme!
 	"folke/tokyonight.nvim",
-	"nvim-treesitter/nvim-treesitter",
 	"neovim/nvim-lspconfig",
 	{
 		"hrsh7th/nvim-cmp",
@@ -78,5 +77,22 @@ local plugins = {
 require("lazy").setup(plugins, {
 	root = root .. "/plugins",
 })
-require("lspconfig")["rust-analyzer"].setup({})
+require("lspconfig").lua_ls.setup({
+	settings = {
+		capabilities = require("cmp_nvim_lsp").default_capabilities(),
+		Lua = {
+			runtime = {
+				version = "LuaJIT",
+			},
+			workspace = {
+				library = {
+					"/usr/local/share/nvim/runtime",
+				},
+			},
+			completion = {
+				callSnippet = "Replace",
+			},
+		},
+	},
+})
 vim.cmd([[colorscheme tokyonight]])
