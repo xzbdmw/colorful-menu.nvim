@@ -5,6 +5,7 @@
 Out of box, this plugin reconsturct completion_item and applies Treesitter highlight queries to 
 produce richly colorized completion items with variable-size highlight ranges, somehow similar
 to lspkind.nvim.
+to lspkind.nvim. It supports per-filetype, per-lspkind configuration overrides.
 
 **Highly beta**.
 
