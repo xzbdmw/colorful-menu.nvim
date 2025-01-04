@@ -11,9 +11,7 @@ to lspkind.nvim.
 run `nvim  -u ~/.config/nvim/repro.lua ~/.config/nvim/repro.lua` as a minimal reproduce template
 see [repro.lua](https://github.com/xzbdmw/colorful-menu.nvim/blob/master/repro.lua)
 
-
-
-Has built-in supports for rust, go, typescript, lua, c, for any other language, default to direcctly
+Has built-in supports for rust, go, typescript, lua, c, for any other language, default to directly
 apply treesitter highlight to label.
 
 Currently only supports nvim-cmp, but can be extended easily.
@@ -92,36 +90,65 @@ formatting = {
 ## Screen
 
 # Go
+## before:
+<img width="814" alt="image" src="https://github.com/user-attachments/assets/30614c61-32d9-4d64-8742-58dd443de6ae" />
+
+## after:
+<img width="857" alt="image" src="https://github.com/user-attachments/assets/91dead66-87d7-4606-8738-a8b45871e63a" />
 
 
+
+<details>
+  <summary>Click to see video</summary>
 https://github.com/user-attachments/assets/fe72a70b-28ec-460f-9b77-12c95bf74e2e
+</details>
 
 # Rust
+## before:
+<img width="669" alt="image" src="https://github.com/user-attachments/assets/1c053055-48c7-4b2f-b228-daa77f740eef" />
 
+## after:
+<img width="722" alt="image" src="https://github.com/user-attachments/assets/d196db15-163a-496f-a8d4-dc1798b59543" />
 
-
+<details>
+  <summary>Click to see video</summary>
 https://github.com/user-attachments/assets/94cb79f0-b93f-4749-99b7-15eae3764f0f
-
+</details>
 
 # C
+## before：
+<img width="605" alt="image" src="https://github.com/user-attachments/assets/be41f824-1ba3-48e8-baad-274efb298a92" />
 
+## after:
+<img width="840" alt="image" src="https://github.com/user-attachments/assets/43959f9a-7355-4695-9566-231f7627b6c6" />
 
-
+<details>
+  <summary>Click to see video</summary>
 https://github.com/user-attachments/assets/725ea273-b598-4947-b189-f642fa51cf9b
-
-
-
+</details>
 
 # Lua
+## before:
+<img width="608" alt="image" src="https://github.com/user-attachments/assets/f8610a41-af17-458e-852d-f86c90e9860d" />
 
+## after:
+<img width="688" alt="image" src="https://github.com/user-attachments/assets/08e20d76-d57e-4953-92e2-87de8e862a04" />
 
-https://github.com/user-attachments/assets/1e5b1587-4374-49c3-88e7-1e8ed37b3210
+<details>
+  <summary>Click to see video</summary>
+https://github.com/user-attachments/assets/725ea273-b598-4947-b189-f642fa51cf9b)](https://github.com/user-attachments/assets/1e5b1587-4374-49c3-88e7-1e8ed37b3210
+</details>
 
 # Typescript
+## before:
+<img width="383" alt="image" src="https://github.com/user-attachments/assets/a787d034-6b33-4ecb-8512-bfb8e2dfa7b3" />
 
-
+## after:
+<img width="914" alt="image" src="https://github.com/user-attachments/assets/ae62c90f-ef34-4ca5-9dc5-408dbd1313bd" />
+<details>
+  <summary>Click to see video</summary>
 https://github.com/user-attachments/assets/07509e0c-8c7a-4895-8096-73343f85c583
-
+</details>
 
 
 ## Contributing
