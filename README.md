@@ -35,6 +35,8 @@ return {
 					auguments_hl = "@comment",
 				},
 				typescript = {
+					-- Add more filetype when needed, these two are default value.
+					enabled = { "typescript", "typescriptreact", "typescript.tsx" },
 					-- Or "vtsls", their information is different, so we
 					-- need to know in advance.
 					ls = "typescript-language-server",
@@ -49,8 +51,8 @@ return {
 					extra_info_hl = "@comment",
 				},
 
-                                -- If we should try to highlight "not supported" languages
-                                fallback = true,
+				-- If we should try to highlight "not supported" languages
+				fallback = true,
 			},
 			-- If the built-in logic fails to find a suitable highlight group,
 			-- this highlight is applied to the label.

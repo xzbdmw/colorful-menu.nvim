@@ -10,6 +10,8 @@ local default_config = {
 			auguments_hl = "@comment",
 		},
 		typescript = {
+			-- Add more filetype when needed, these two are default value.
+			enabled = { "typescript", "typescriptreact", "typescript.tsx" },
 			-- Or "vtsls", their information is different, so we
 			-- need to know in advance.
 			ls = "typescript-language-server",
@@ -77,14 +79,12 @@ function M.compute_highlights(str, filetype)
 		return {}
 	end
 
-	-- Get the root node of the syntax tree
 	local root = tree:root()
 	-- Iterate over all captures in the query
 	for id, node in query:iter_captures(root, str, 0, -1) do
 		local name = "@" .. query.captures[id] .. "." .. filetype
 		local range = { node:range() }
 		local _, nscol, _, necol = range[1], range[2], range[3], range[4]
-		-- Insert the highlight information into the highlights table
 		table.insert(highlights, {
 			hl_group = name,
 			range = { nscol, necol },
@@ -95,7 +95,7 @@ function M.compute_highlights(str, filetype)
 end
 
 function M.highlights(completion_item, ft)
-	if ft == nil or ft == "" then
+	if ft == nil or ft == "" or vim.b.ts_highlight == false then
 		return nil
 	end
 	local kind = completion_item.kind
@@ -118,7 +118,7 @@ function M.highlights(completion_item, ft)
 		item = M.lua_compute_completion_highlights(completion_item, ft)
 	elseif ft == "c" then
 		item = M.c_compute_completion_highlights(completion_item, ft)
-	elseif ft == "typescript" then
+	elseif vim.tbl_contains(M.config.ft.typescript.enabled, ft) then
 		if M.config.ft.typescript.ls == "typescript-language-server" then
 			item = M.typescript_language_server_label_for_completion(completion_item, ft)
 		elseif M.config.ft.typescript.ls == "vtsls" then
@@ -148,7 +148,6 @@ function M.apply_post_processing(item)
 
 	local text = item.text
 	local max_width = M.config.max_width
-
 	if max_width and max_width > 0 then
 		-- if text length is beyond max_width, truncate
 		local display_width = vim.fn.strdisplaywidth(text)
@@ -415,21 +414,30 @@ function M.vtsls_compute_completion_highlights(completion_item, language)
 	local description = completion_item.labelDetails and completion_item.labelDetails.description
 	local detail = completion_item.detail
 
+	local highlights = {
+		{
+			highlight_name,
+			range = { 0, #label },
+		},
+	}
 	local text = label
 	if description then
 		text = label .. " " .. one_line(description)
+		table.insert(highlights, {
+			M.config.ft.typescript.extra_info_hl,
+			range = { #label + 1, #text - 1 },
+		})
 	elseif detail then
 		text = label .. " " .. one_line(detail)
+		table.insert(highlights, {
+			M.config.ft.typescript.extra_info_hl,
+			range = { #label + 1, #text - 1 },
+		})
 	end
 
 	return {
 		text = text,
-		highlights = {
-			{
-				highlight_name,
-				range = { 0, len },
-			},
-		},
+		highlights = highlights,
 	}
 end
 
