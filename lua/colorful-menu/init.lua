@@ -554,7 +554,7 @@ function M.go_compute_completion_highlights(completion_item, ft)
 	elseif (kind == M.Kind.Constant or kind == M.Kind.Variable) and detail then
 		local text = string.format("%s %s", label, detail)
 		local var_part = text:sub(name_offset)
-		local source = string.format("var %s %s", var_part, detail)
+		local source = string.format("var %s", var_part)
 		local item = M.highlight_range(source, ft, 4, 4 + #var_part)
 		return M.adjust_range(item, name_offset, text)
 		--
