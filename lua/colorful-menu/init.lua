@@ -3,11 +3,16 @@ local insertTextFormat = { PlainText = 1, Snippet = 2 }
 -- stylua: ignore
 M.Kind = { Text = 1, Method = 2, Function = 3, Constructor = 4, Field = 5, Variable = 6, Class = 7, Interface = 8, Module = 9, Property = 10, Unit = 11, Value = 12, Enum = 13, Keyword = 14, Snippet = 15, Color = 16, File = 17, Reference = 18, Folder = 19, EnumMember = 20, Constant = 21, Struct = 22, Event = 23, Operator = 24, TypeParameter = 25 }
 
-local default_config = {
+M.config = {
 	ft = {
 		lua = {
 			-- Maybe you want to dim arguments a bit.
 			auguments_hl = "@comment",
+		},
+		go = {
+			-- When true, label for field and variable will format like "foo: Foo"
+			-- instead of go's original syntax "foo Foo".
+			add_colon_before_type = false,
 		},
 		typescript = {
 			-- Add more filetype when needed, these three taken from lspconfig are default value.
@@ -18,14 +23,14 @@ local default_config = {
 			extra_info_hl = "@comment",
 		},
 		rust = {
-			-- such as (as Iterator), (use std::io).
+			-- Such as (as Iterator), (use std::io).
 			extra_info_hl = "@comment",
 			overrides = {
 				-- [3] = function(completion_item) end, -- 3 = Function, for all the kinds, see https://github.com/xzbdmw/colorful-menu.nvim/blob/56871ac630383d4135b7b123e5dc2dafb22e76f7/lua/colorful-menu/init.lua#L4
 			},
 		},
 		c = {
-			-- such as "From <stdio.h>"
+			-- Such as "From <stdio.h>".
 			extra_info_hl = "@comment",
 			overrides = {
 				-- [6] = function(completion_item) end, -- 6 = Variable
@@ -36,8 +41,6 @@ local default_config = {
 	fallback_highlight = "@variable",
 	max_width = 60,
 }
-
-M.config = vim.tbl_deep_extend("force", {}, default_config)
 
 local query_cache = {}
 local parser_cache = {}
@@ -132,7 +135,6 @@ function M.highlights(completion_item, ft)
 		if not M.config.ft.fallback then
 			return nil
 		end
-
 		item = M.default_highlight(completion_item, ft)
 	end
 
@@ -546,7 +548,12 @@ function M.go_compute_completion_highlights(completion_item, ft)
 		return M.highlight_range(source, ft, 7, 7 + #text)
 		--
 	elseif (kind == M.Kind.Constant or kind == M.Kind.Variable) and detail then
-		local text = string.format("%s %s", label, detail)
+		local text
+		if M.config.ft.go.add_colon_before_type then
+			text = string.format("%s: %s", label, detail)
+		else
+			text = string.format("%s %s", label, detail)
+		end
 		local var_part = text:sub(name_offset)
 		local source = string.format("var %s", var_part)
 		local item = M.highlight_range(source, ft, 4, 4 + #var_part)
@@ -565,7 +572,12 @@ function M.go_compute_completion_highlights(completion_item, ft)
 		return M.adjust_range(item, name_offset, text)
 		--
 	elseif kind == M.Kind.Field and detail then
-		local text = string.format("%s %s", label, detail)
+		local text
+		if M.config.ft.go.add_colon_before_type then
+			text = string.format("%s: %s", label, detail)
+		else
+			text = string.format("%s %s", label, detail)
+		end
 		local source = string.format("type T struct { %s }", text:sub(name_offset))
 		local item = M.highlight_range(source, ft, 16, 16 + #text:sub(name_offset))
 		return M.adjust_range(item, name_offset, text)
@@ -620,11 +632,6 @@ end
 function M.setup(opts)
 	opts = opts or {}
 	M.config = vim.tbl_deep_extend("force", M.config, opts)
-
-	-- Ensure M.config.overrides is a table
-	if type(M.config.overrides) ~= "table" then
-		M.config.overrides = {}
-	end
 end
 
 return M

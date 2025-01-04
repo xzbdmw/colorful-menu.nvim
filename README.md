@@ -34,6 +34,11 @@ return {
 					-- Maybe you want to dim arguments a bit.
 					auguments_hl = "@comment",
 				},
+				go = {
+					-- When true, label for field and variable will format like "foo: Foo"
+					-- instead of go's original syntax "foo Foo".
+					add_colon_before_type = false,
+				},
 				typescript = {
 					-- Add more filetype when needed, these three taken from lspconfig are default value.
 					enabled = { "typescript", "typescriptreact", "typescript.tsx" },
@@ -43,15 +48,15 @@ return {
 					extra_info_hl = "@comment",
 				},
 				rust = {
-					-- such as (as Iterator), (use std::io).
+					-- Such as (as Iterator), (use std::io).
 					extra_info_hl = "@comment",
 				},
 				c = {
-					-- such as "From <stdio.h>"
+					-- Such as "From <stdio.h>"
 					extra_info_hl = "@comment",
 				},
 
-				-- If we should try to highlight "not supported" languages
+				-- If true, try to highlight "not supported" languages.
 				fallback = true,
 			},
 			-- If the built-in logic fails to find a suitable highlight group,
