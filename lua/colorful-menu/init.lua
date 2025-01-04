@@ -245,11 +245,9 @@ function M._rust_compute_completion_highlights(completion_item, ft)
 		local highlight_name = nil
 		if kind == M.Kind.Struct or kind == M.Kind.Interface or kind == M.Kind.Enum then
 			highlight_name = "@type"
-		elseif kind == M.Kind.EnumMember then
-			highlight_name = "@variant"
 		elseif kind == M.Kind.Keyword then
 			highlight_name = "@keyword"
-		elseif kind == M.Kind.Value or kind == M.Kind.Constant then
+		elseif kind == M.Kind.Value or kind == M.Kind.Constant or M.Kind.EnumMember then
 			highlight_name = "@constant"
 		else
 			highlight_name = M.config.fallback_highlight
