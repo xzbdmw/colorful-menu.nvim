@@ -10,7 +10,7 @@ local default_config = {
 			auguments_hl = "@comment",
 		},
 		typescript = {
-			-- Add more filetype when needed, these two are default value.
+			-- Add more filetype when needed, these three taken from lspconfig are default value.
 			enabled = { "typescript", "typescriptreact", "typescript.tsx" },
 			-- Or "vtsls", their information is different, so we
 			-- need to know in advance.
