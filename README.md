@@ -14,7 +14,7 @@ to lspkind.nvim.
 run `nvim  -u ~/.config/nvim/repro.lua ~/.config/nvim/repro.lua` as a minimal reproduce template
 see [repro.lua](https://github.com/xzbdmw/colorful-menu.nvim/blob/master/repro.lua)
 
-Has built-in supports for **rust**, **go**, **typescript**, **lua**, **c**, for any other language, default to directly
+Has built-in supports for **rust**, **go**, **typescript**, **lua**, **c**, **php**, for any other language, default to directly
 apply treesitter highlight to label (feel free to open feature request for more languages).
 
 Currently supports **nvim-cmp** and **blink.cmp**.
@@ -209,6 +209,14 @@ https://github.com/user-attachments/assets/725ea273-b598-4947-b189-f642fa51cf9b)
   <summary>Click to see video</summary>
 https://github.com/user-attachments/assets/07509e0c-8c7a-4895-8096-73343f85c583
 </details>
+
+# PHP Thanks to [@pnx](https://github.com/pnx)
+## before:
+![image](https://github.com/user-attachments/assets/5c26d88e-d37c-46aa-a8fd-22e44aa16c05)
+
+## after:
+![image](https://github.com/user-attachments/assets/4dc7e943-3552-4a75-933d-10bf553d258c)
+
 
 
 ## Contributing
