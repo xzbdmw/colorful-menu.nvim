@@ -181,7 +181,7 @@ function M.default_highlight(completion_item, ft)
 	if label == nil then
 		return ""
 	end
-	return M.highlight_range(label, ft, 0, #label - 1)
+	return M.highlight_range(label, ft, 0, #label)
 end
 
 function M._rust_compute_completion_highlights(completion_item, ft)
@@ -191,7 +191,7 @@ function M._rust_compute_completion_highlights(completion_item, ft)
 
 	local kind = completion_item.kind
 	if not kind then
-		return M.highlight_range(completion_item.label, ft, 0, #completion_item.label - 1)
+		return M.highlight_range(completion_item.label, ft, 0, #completion_item.label)
 	end
 
 	if kind == M.Kind.Field and detail then
@@ -232,12 +232,12 @@ function M._rust_compute_completion_highlights(completion_item, ft)
 			-- Construct the fake source string as in Rust
 			local source = string.format("%s %s {}", prefix, text)
 
-			return M.highlight_range(source, ft, #prefix + 1, #source - 4)
+			return M.highlight_range(source, ft, #prefix + 1, #source - 3)
 		else
 			-- Check if the detail starts with "macro_rules! "
 			if completion_item.detail and vim.startswith(completion_item.detail, "macro_rules") then
 				local source = completion_item.label
-				return M.highlight_range(source, ft, 0, #source - 1)
+				return M.highlight_range(source, ft, 0, #source)
 			end
 		end
 	else
@@ -290,7 +290,7 @@ function M.highlight_range(text, ft, left, right)
 	end
 
 	return {
-		text = text:sub(left + 1, right + 1),
+		text = text:sub(left + 1, right),
 		highlights = highlights,
 	}
 end
@@ -314,18 +314,14 @@ function M._lua_compute_completion_highlights(completion_item, ft)
 	local kind = completion_item.kind
 
 	if not kind then
-		return M.highlight_range(label, ft, 0, #label - 1)
+		return M.highlight_range(label, ft, 0, #label)
 	end
 	if kind == M.Kind.Field then
 		local text = string.format("%s", label)
 		local source = string.format("v.%s", text)
 		return M.highlight_range(source, ft, 2, 2 + #text)
-	elseif kind == M.Kind.Text then
-		local text = string.format("%s", label)
-		local source = string.format('"%s"', text)
-		return M.highlight_range(source, ft, 1, #source - 2)
 	else
-		return M.highlight_range(label, ft, 0, #label - 1)
+		return M.highlight_range(label, ft, 0, #label)
 	end
 end
 
@@ -337,7 +333,7 @@ function M.typescript_language_server_label_for_completion(item, language)
 	local text = detail and (label .. " " .. detail) or label
 
 	if not kind then
-		return M.highlight_range(text, language, 0, #text - 1)
+		return M.highlight_range(text, language, 0, #text)
 	end
 
 	local highlight_name
@@ -391,7 +387,7 @@ function M.vtsls_compute_completion_highlights(completion_item, language)
 
 	local kind = completion_item.kind
 	if not kind then
-		return M.highlight_range(label, language, 0, #label - 1)
+		return M.highlight_range(label, language, 0, #label)
 	end
 
 	local highlight_name
@@ -470,7 +466,7 @@ function M._c_compute_completion_highlights(completion_item, ft)
 
 	-- If no kind, just fallback to highlighting the cleaned-up label
 	if not kind then
-		return M.highlight_range(label, ft, 0, #label - 1)
+		return M.highlight_range(label, ft, 0, #label)
 	end
 
 	-- Fields with detail => "detail label" => highlight in "struct S { ... }"
@@ -483,12 +479,12 @@ function M._c_compute_completion_highlights(completion_item, ft)
 		-- Constants or Variables with detail => "detail label", highlight entire text
 	elseif (kind == M.Kind.Constant or kind == M.Kind.Variable) and detail and #detail > 0 then
 		local text = string.format("%s %s", detail, label)
-		return M.highlight_range(text, ft, 0, #text - 1)
+		return M.highlight_range(text, ft, 0, #text)
 
 		-- Functions or Methods with detail => "detail label", might find '('
 	elseif (kind == M.Kind.Function or kind == M.Kind.Method) and detail and #detail > 0 then
 		local text = string.format("%s %s%s", detail, label, labelDetails.detail or "")
-		return M.highlight_range(text, ft, 0, #text - 1)
+		return M.highlight_range(text, ft, 0, #text)
 		--
 	else
 		local highlight_name = nil
@@ -533,7 +529,7 @@ function M.go_compute_completion_highlights(completion_item, ft)
 	local kind = completion_item.kind
 
 	if not kind then
-		return M.highlight_range(label, ft, 0, #label - 1)
+		return M.highlight_range(label, ft, 0, #label)
 	end
 
 	-- Gopls returns nested fields and methods as completions.
