@@ -294,6 +294,8 @@ function M._rust_compute_completion_highlights(completion_item, ft)
 	return {}
 end
 
+-- `left` is inclusive and `right` is exclusive (also zero indexed), to better fit
+-- `nvim_buf_set_extmark` semantic, so `M.highlight_range(text, ft, 0, #text)` is the entire range.
 function M.highlight_range(text, ft, left, right)
 	local highlights = {}
 	local full_hl = M.compute_highlights(text, ft)
