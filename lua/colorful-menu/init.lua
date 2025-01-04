@@ -186,6 +186,15 @@ function M.default_highlight(completion_item, ft)
 	return M.highlight_range(label, ft, 0, #label)
 end
 
+function M.hl_exist_or(hl_group, fallback)
+	local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = hl_group })
+	if ok and hl ~= nil then
+		return hl_group
+	else
+		return fallback
+	end
+end
+
 function M._rust_compute_completion_highlights(completion_item, ft)
 	local detail = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
 	local function_signature = completion_item.labelDetails and completion_item.labelDetails.description
@@ -243,14 +252,25 @@ function M._rust_compute_completion_highlights(completion_item, ft)
 			end
 		end
 	else
-		-- Handle other kinds
 		local highlight_name = nil
-		if kind == M.Kind.Struct or kind == M.Kind.Interface or kind == M.Kind.Enum then
+		if kind == M.Kind.Struct then
 			highlight_name = "@type"
+			--
+		elseif kind == M.Kind.Enum then
+			highlight_name = M.hl_exist_or("@lsp.type.enum.rust", "@type")
+			--
+		elseif kind == M.Kind.EnumMember then
+			highlight_name = M.hl_exist_or("@lsp.type.enumMember.rust", "@constant")
+			--
+		elseif kind == M.Kind.Interface then
+			highlight_name = M.hl_exist_or("@lsp.type.interface.rust", "@type")
+			--
 		elseif kind == M.Kind.Keyword then
 			highlight_name = "@keyword"
-		elseif kind == M.Kind.Value or kind == M.Kind.Constant or M.Kind.EnumMember then
+			--
+		elseif kind == M.Kind.Value or kind == M.Kind.Constant then
 			highlight_name = "@constant"
+			--
 		else
 			highlight_name = M.config.fallback_highlight
 		end
