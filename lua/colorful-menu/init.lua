@@ -470,10 +470,11 @@ end
 function M.c_compute_completion_highlights(completion_item, ft)
     local vim_item = M._c_compute_completion_highlights(completion_item, ft)
     if vim_item.text ~= nil then
+        vim_item.text = vim_item.text:gsub(";", " ")
         local document = completion_item.documentation
         if document and document.value and vim.startswith(document.value, "From ") then
             local len = #vim_item.text
-            vim_item.text = vim_item.text .. "  " .. document.value
+            vim_item.text = string.gsub(vim_item.text .. "  " .. document.value, "\n", " ")
             table.insert(vim_item.highlights, {
                 M.config.ft.c.extra_info_hl,
                 range = { len + 2, #vim_item.text },
@@ -485,11 +486,7 @@ end
 
 -- Add this in your module, alongside the other compute functions
 function M._c_compute_completion_highlights(completion_item, ft)
-    -- Remove leading "•" if present
-    local raw_label = completion_item.label
-    local label = raw_label:gsub("^•", "")
-    label = vim.trim(label)
-
+    local label = completion_item.label
     local kind = completion_item.kind
     local detail = completion_item.detail
     local labelDetails = completion_item.labelDetails
@@ -508,13 +505,14 @@ function M._c_compute_completion_highlights(completion_item, ft)
 
         -- Constants or Variables with detail => "detail label", highlight entire text
     elseif (kind == M.Kind.Constant or kind == M.Kind.Variable) and detail and #detail > 0 then
-        local text = string.format("%s %s", detail, label)
-        return M.highlight_range(text, ft, 0, #text)
+        -- &chunk;Chunk -> chunk: Chunk
+        local text = string.format("&%s;%s", label, detail)
+        return M.highlight_range(text, ft, 1, #text)
 
         -- Functions or Methods with detail => "detail label", might find '('
     elseif (kind == M.Kind.Function or kind == M.Kind.Method) and detail and #detail > 0 then
-        local text = string.format("%s %s%s", detail, label, labelDetails.detail or "")
-        return M.highlight_range(text, ft, 0, #text)
+        local text = string.format("void %s%s;%s", label, labelDetails.detail or "", detail)
+        return M.highlight_range(text, ft, 5, #text)
         --
     else
         local highlight_name = nil
