@@ -14,7 +14,7 @@ to lspkind.nvim.
 run `nvim  -u ~/.config/nvim/repro.lua ~/.config/nvim/repro.lua` as a minimal reproduce template
 see [repro.lua](https://github.com/xzbdmw/colorful-menu.nvim/blob/master/repro.lua)
 
-Has built-in supports for **rust**, **go**, **typescript**, **lua**, **c**, **php**, for any other language, default to directly
+Has built-in supports for **rust-analyzer(rust)**, **gopls(go)**, **typescript-language-server/vtsls**, **lua-ls**, **clangd(C)**, **intelephense(php)**, for any other language, default to directly
 apply treesitter highlight to label (feel free to open feature request for more languages).
 
 Currently supports **nvim-cmp** and **blink.cmp**.
@@ -29,30 +29,31 @@ return {
     config = function()
         -- You don't need to set these options.
         require("colorful-menu").setup({
-            ft = {
-                lua = {
+            ls = {
+                lua_ls = {
                     -- Maybe you want to dim arguments a bit.
                     auguments_hl = "@comment",
                 },
-                go = {
+                gopls = {
                     -- When true, label for field and variable will format like "foo: Foo"
                     -- instead of go's original syntax "foo Foo".
                     add_colon_before_type = false,
                 },
-                typescript = {
-                    -- Add more filetype when needed, these three taken from lspconfig are default value.
-                    enabled = { "typescript", "typescriptreact", "typescript.tsx" },
-                    -- Or "vtsls", their information is different, so we
-                    -- need to know in advance.
-                    ls = "typescript-language-server",
+                ["typescript-language-server"] = {
                     extra_info_hl = "@comment",
                 },
-                rust = {
+                ts_ls = {
+                    extra_info_hl = "@comment",
+                },
+                vtsls = {
+                    extra_info_hl = "@comment",
+                },
+                ["rust-analyzer"] = {
                     -- Such as (as Iterator), (use std::io).
                     extra_info_hl = "@comment",
                 },
-                c = {
-                    -- Such as "From <stdio.h>"
+                clangd = {
+                    -- Such as "From <stdio.h>".
                     extra_info_hl = "@comment",
                 },
 
@@ -75,26 +76,15 @@ return {
 
 ```lua
 formatting = {
-    fields = { "kind", "abbr", "menu" },
     format = function(entry, vim_item)
-        local completion_item = entry:get_completion_item()
-        local highlights_info =
-            require("colorful-menu").highlights(completion_item, vim.bo.filetype)
+        local highlights_info = require("colorful-menu").cmp_highlights(entry)
 
-		-- error, such as missing parser, fallback to use raw label.
-        if highlights_info == nil then
-            vim_item.abbr = completion_item.label
-        else
+		-- if highlight_info==nil, which means missing ts parser, let's fallback to use default `vim_item.abbr`.
+        -- What this plugin offers is two fields: `vim_item.abbr_hl_group` and `vim_item.abbr`.
+        if highlights_info ~= nil then
             vim_item.abbr_hl_group = highlights_info.highlights
             vim_item.abbr = highlights_info.text
         end
-
-        local kind = require("lspkind").cmp_format({
-            mode = "symbol_text",
-        })(entry, vim_item)
-        local strings = vim.split(kind.kind, "%s", { trimempty = true })
-        vim_item.kind = " " .. (strings[1] or "") .. " "
-        vim_item.menu = ""
 
         return vim_item
     end,
@@ -108,30 +98,25 @@ config = function()
         completion = {
             menu = {
                 draw = {
+                    -- We don't need label_description now because label and label_description are already
+                    -- conbined together in label by colorful-menu.nvim.
+                    columns = { { "kind_icon" }, { "label", gap = 1 } },
                     components = {
                         label = {
                             width = { fill = true, max = 60 },
                             text = function(ctx)
-                                local highlights_info =
-                                require("colorful-menu").highlights(ctx.item, vim.bo.filetype)
+                                local highlights_info = require("colorful-menu").blink_highlights(ctx)
                                 if highlights_info ~= nil then
-                                    return highlights_info.text
+                                    return highlights_info.label
                                 else
                                     return ctx.label
                                 end
                             end,
                             highlight = function(ctx)
-                                local highlights_info =
-                                require("colorful-menu").highlights(ctx.item, vim.bo.filetype)
                                 local highlights = {}
+                                local highlights_info = require("colorful-menu").blink_highlights(ctx)
                                 if highlights_info ~= nil then
-                                    for _, info in ipairs(highlights_info.highlights) do
-                                        table.insert(highlights, {
-                                            info.range[1],
-                                            info.range[2],
-                                            group = ctx.deprecated and "BlinkCmpLabelDeprecated" or info[1],
-                                        })
-                                    end
+                                    highlights = highlights_info.highlights
                                 end
                                 for _, idx in ipairs(ctx.label_matched_indices) do
                                     table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
@@ -149,7 +134,7 @@ end,
 
 ## Screen
 
-# Go
+# gopls
 ## before:
 <img width="814" alt="image" src="https://github.com/user-attachments/assets/30614c61-32d9-4d64-8742-58dd443de6ae" />
 
@@ -163,7 +148,7 @@ end,
 https://github.com/user-attachments/assets/fe72a70b-28ec-460f-9b77-12c95bf74e2e
 </details>
 
-# Rust
+# rust-analyzer
 ## before:
 <img width="669" alt="image" src="https://github.com/user-attachments/assets/1c053055-48c7-4b2f-b228-daa77f740eef" />
 
@@ -175,7 +160,7 @@ https://github.com/user-attachments/assets/fe72a70b-28ec-460f-9b77-12c95bf74e2e
 https://github.com/user-attachments/assets/94cb79f0-b93f-4749-99b7-15eae3764f0f
 </details>
 
-# C
+# clangd
 ## before：
 <img width="605" alt="image" src="https://github.com/user-attachments/assets/be41f824-1ba3-48e8-baad-274efb298a92" />
 
@@ -187,7 +172,7 @@ https://github.com/user-attachments/assets/94cb79f0-b93f-4749-99b7-15eae3764f0f
 https://github.com/user-attachments/assets/725ea273-b598-4947-b189-f642fa51cf9b
 </details>
 
-# Lua
+# lua_ls
 ## before:
 <img width="608" alt="image" src="https://github.com/user-attachments/assets/f8610a41-af17-458e-852d-f86c90e9860d" />
 
@@ -199,7 +184,7 @@ https://github.com/user-attachments/assets/725ea273-b598-4947-b189-f642fa51cf9b
 https://github.com/user-attachments/assets/725ea273-b598-4947-b189-f642fa51cf9b)](https://github.com/user-attachments/assets/1e5b1587-4374-49c3-88e7-1e8ed37b3210
 </details>
 
-# Typescript
+# typescript-language-server
 ## before:
 <img width="383" alt="image" src="https://github.com/user-attachments/assets/a787d034-6b33-4ecb-8512-bfb8e2dfa7b3" />
 
@@ -210,7 +195,7 @@ https://github.com/user-attachments/assets/725ea273-b598-4947-b189-f642fa51cf9b)
 https://github.com/user-attachments/assets/07509e0c-8c7a-4895-8096-73343f85c583
 </details>
 
-# PHP Thanks to [@pnx](https://github.com/pnx)
+# intelephense(PHP) Thanks to [@pnx](https://github.com/pnx)
 ## before:
 ![image](https://github.com/user-attachments/assets/5c26d88e-d37c-46aa-a8fd-22e44aa16c05)
 
