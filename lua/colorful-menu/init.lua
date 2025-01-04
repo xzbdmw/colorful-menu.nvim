@@ -121,6 +121,8 @@ function M.highlights(completion_item, ft)
         item = M.lua_compute_completion_highlights(completion_item, ft)
     elseif ft == "c" then
         item = M.c_compute_completion_highlights(completion_item, ft)
+    elseif ft == "php" then
+        item = M.php_intelephense_compute_completion_highlights(completion_item, ft)
     elseif vim.tbl_contains(M.config.ft.typescript.enabled, ft) then
         if M.config.ft.typescript.ls == "typescript-language-server" then
             item = M.typescript_language_server_label_for_completion(completion_item, ft)
@@ -655,6 +657,50 @@ function M.adjust_range(item, name_offset, label)
         range = { 0, name_offset },
     })
     return item
+end
+
+function M.php_intelephense_compute_completion_highlights(completion_item, ft)
+    local label = completion_item.label
+    local detail = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
+    local kind = completion_item.kind
+
+    if (kind == M.Kind.Function or kind == M.Kind.Method) and detail and #detail > 0 then
+        local signature = detail:sub(#label+1)
+        local text = string.format("%s <?php fn %s {}", label, signature)
+        local item = M.highlight_range(text, ft, 6 + #label, #text - 2)
+        return M.adjust_range(item, #label+1, label)
+    elseif kind == M.Kind.EnumMember and detail and #detail > 0 then
+        local text = string.format("%s <?php %s;", label, detail)
+        local item = M.highlight_range(text, ft, #label + 6, #text - 1)
+        return M.adjust_range(item, #label+1, label)
+    elseif (kind == M.Kind.Property or kind == M.Kind.Variable) and detail and #detail > 0 then
+        detail = string.gsub(detail, ".*\\(.)", "%1")
+        local text = string.format("%s <?php fn(): %s;", label, detail)
+        local item = M.highlight_range(text, ft, #label + 12, #text - 1)
+        return M.adjust_range(item, #label+1, label)
+    elseif kind == M.Kind.Constant and detail and #detail > 0 then
+        local text = string.format("%s <?php %s;", label, detail)
+        local item = M.highlight_range(text, ft, #label + 6, #text - 1)
+        return M.adjust_range(item, #label+1, label)
+    else
+        -- Handle other kinds
+        local highlight_name = nil
+        if kind == M.Kind.Keyword then
+            highlight_name = "@keyword"
+        else
+            highlight_name = M.config.fallback_highlight
+        end
+
+        return {
+            text = completion_item.label,
+            highlights = {
+                {
+                    highlight_name,
+                    range = { 0, #completion_item.label },
+                },
+            },
+        }
+    end
 end
 
 function M.setup(opts)
