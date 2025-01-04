@@ -46,6 +46,8 @@ M.config = {
 
 local query_cache = {}
 local parser_cache = {}
+local parser_cache_size = 0
+local MAX_PARSER_CACHE_SIZE = 10000
 
 ---@param str string
 ---@param ls string
@@ -74,6 +76,11 @@ function M.compute_highlights(str, ls)
         ok, parser = pcall(vim.treesitter.get_string_parser, str, lang)
         if not ok then
             return {}
+        end
+        parser_cache_size = parser_cache_size + 1
+        if parser_cache_size > MAX_PARSER_CACHE_SIZE then
+            parser_cache_size = 0
+            parser_cache = {}
         end
         parser_cache[str .. "!!" .. ls] = parser
     else
