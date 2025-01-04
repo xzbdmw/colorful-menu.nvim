@@ -29,6 +29,7 @@ local default_config = {
 				-- [6] = function(completion_item) end, -- 6 = Variable
 			},
 		},
+		fallback = true,
 	},
 	fallback_highlight = "@variable",
 	max_width = 60,
@@ -127,7 +128,12 @@ function M.highlights(completion_item, ft)
 			return
 		end
 	else
-		return nil
+		-- No languages detected so check if we should highlight with default or not
+		if not M.config.ft.fallback then
+			return nil
+		end
+
+		item = M.default_highlight(completion_item, ft)
 	end
 
 	M.apply_post_processing(item)
@@ -169,6 +175,14 @@ function M.rust_compute_completion_highlights(completion_item, ft)
 		end
 	end
 	return vim_item
+end
+
+function M.default_highlight(completion_item, ft)
+	local label = completion_item.label
+	if label == nil then
+		return ""
+	end
+	return M.highlight_range(label, ft, 0, #label - 1)
 end
 
 function M._rust_compute_completion_highlights(completion_item, ft)
