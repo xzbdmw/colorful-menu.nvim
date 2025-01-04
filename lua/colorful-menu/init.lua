@@ -127,7 +127,7 @@ function M.highlights(completion_item, ft)
 			return
 		end
 	else
-		item = { text = completion_item.label }
+		return nil
 	end
 
 	M.apply_post_processing(item)
