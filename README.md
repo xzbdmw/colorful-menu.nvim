@@ -1,6 +1,9 @@
 # README
 
 ## colorful-menu.nvim
+<p align="center">
+  <img width="566" alt="image" src="https://github.com/user-attachments/assets/0b129a4a-19c6-4840-b672-2c8b58994724" />
+</p>
 
 Out of box, this plugin reconsturct completion_item and applies Treesitter highlight queries to 
 produce richly colorized completion items with variable-size highlight ranges, somehow similar
@@ -11,10 +14,10 @@ to lspkind.nvim.
 run `nvim  -u ~/.config/nvim/repro.lua ~/.config/nvim/repro.lua` as a minimal reproduce template
 see [repro.lua](https://github.com/xzbdmw/colorful-menu.nvim/blob/master/repro.lua)
 
-Has built-in supports for rust, go, typescript, lua, c, for any other language, default to directly
-apply treesitter highlight to label.
+Has built-in supports for **rust**, **go**, **typescript**, **lua**, **c**, for any other language, default to directly
+apply treesitter highlight to label (feel free to open feature request for more languages).
 
-Currently only supports nvim-cmp, but can be extended easily.
+Currently supports **nvim-cmp** and **blink.cmp**.
 
 ## Installation
 
