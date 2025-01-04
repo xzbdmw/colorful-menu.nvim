@@ -210,6 +210,7 @@ function M._rust_compute_completion_highlights(completion_item, ft)
 		local text = string.format("%s: %s", name, detail)
 		local source = string.format("struct S { %s }", text)
 		return M.highlight_range(source, ft, 11, 11 + #text)
+		--
 	elseif
 		(kind == M.Kind.Constant or kind == M.Kind.Variable)
 		and detail
@@ -219,6 +220,10 @@ function M._rust_compute_completion_highlights(completion_item, ft)
 		local text = string.format("%s: %s", name, completion_item.detail or detail)
 		local source = string.format("let %s = ();", text)
 		return M.highlight_range(source, ft, 4, 4 + #text)
+		--
+	elseif (kind == M.Kind.EnumMember) and detail then
+		return M.highlight_range(detail, ft, 0, #detail)
+		--
 	elseif (kind == M.Kind.Function or kind == M.Kind.Method) and detail then
 		local pattern = "%((.-)%)"
 		local result = string.match(completion_item.label, pattern)
@@ -251,6 +256,7 @@ function M._rust_compute_completion_highlights(completion_item, ft)
 				return M.highlight_range(source, ft, 0, #source)
 			end
 		end
+		--
 	else
 		local highlight_name = nil
 		if kind == M.Kind.Struct then
