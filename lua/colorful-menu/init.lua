@@ -13,6 +13,7 @@ local default_config = {
 			-- Or "vtsls", their information is different, so we
 			-- need to know in advance.
 			ls = "typescript-language-server",
+			extra_info_hl = "@comment",
 		},
 		rust = {
 			-- such as (as Iterator), (use std::io).
@@ -28,6 +29,7 @@ local default_config = {
 				-- [6] = function(completion_item) end, -- 6 = Variable
 			},
 		},
+		fallback = true,
 	},
 	fallback_highlight = "@variable",
 	max_width = 60,
@@ -126,7 +128,12 @@ function M.highlights(completion_item, ft)
 			return
 		end
 	else
-		item = M.defaut_highlight(completion_item, ft)
+		-- No languages detected so check if we should highlight with default or not
+		if not M.config.ft.fallback then
+			return nil
+		end
+
+		item = M.default_highlight(completion_item, ft)
 	end
 
 	M.apply_post_processing(item)
@@ -170,7 +177,7 @@ function M.rust_compute_completion_highlights(completion_item, ft)
 	return vim_item
 end
 
-function M.defaut_highlight(completion_item, ft)
+function M.default_highlight(completion_item, ft)
 	local label = completion_item.label
 	if label == nil then
 		return ""
@@ -351,14 +358,23 @@ function M.typescript_language_server_label_for_completion(item, language)
 		highlight_name = M.config.fallback_highlight
 	end
 
+	local highlights = {
+		{
+			highlight_name,
+			range = { 0, #label },
+		},
+	}
+
+	if detail then
+		table.insert(highlights, {
+			M.config.ft.typescript.extra_info_hl,
+			range = { #label + 1, #label + 1 + #detail },
+		})
+	end
+
 	return {
 		text = text,
-		highlights = {
-			{
-				highlight_name,
-				range = { 0, #label },
-			},
-		},
+		highlights = highlights,
 	}
 end
 

@@ -38,6 +38,7 @@ return {
 					-- Or "vtsls", their information is different, so we
 					-- need to know in advance.
 					ls = "typescript-language-server",
+					extra_info_hl = "@comment",
 				},
 				rust = {
 					-- such as (as Iterator), (use std::io).
@@ -47,6 +48,9 @@ return {
 					-- such as "From <stdio.h>"
 					extra_info_hl = "@comment",
 				},
+
+                                -- If we should try to highlight "not supported" languages
+                                fallback = true,
 			},
 			-- If the built-in logic fails to find a suitable highlight group,
 			-- this highlight is applied to the label.
