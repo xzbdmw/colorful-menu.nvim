@@ -665,23 +665,27 @@ function M.php_intelephense_compute_completion_highlights(completion_item, ft)
     local kind = completion_item.kind
 
     if (kind == M.Kind.Function or kind == M.Kind.Method) and detail and #detail > 0 then
-        local signature = detail:sub(#label+1)
+        local signature = detail:sub(#label + 1)
         local text = string.format("%s <?php fn %s {}", label, signature)
         local item = M.highlight_range(text, ft, 6 + #label, #text - 2)
-        return M.adjust_range(item, #label+1, label)
+        return M.adjust_range(item, #label + 1, label)
+        --
     elseif kind == M.Kind.EnumMember and detail and #detail > 0 then
         local text = string.format("%s <?php %s;", label, detail)
         local item = M.highlight_range(text, ft, #label + 6, #text - 1)
-        return M.adjust_range(item, #label+1, label)
+        return M.adjust_range(item, #label + 1, label)
+        --
     elseif (kind == M.Kind.Property or kind == M.Kind.Variable) and detail and #detail > 0 then
         detail = string.gsub(detail, ".*\\(.)", "%1")
         local text = string.format("%s <?php fn(): %s;", label, detail)
         local item = M.highlight_range(text, ft, #label + 12, #text - 1)
-        return M.adjust_range(item, #label+1, label)
+        return M.adjust_range(item, #label + 1, label)
+        --
     elseif kind == M.Kind.Constant and detail and #detail > 0 then
         local text = string.format("%s <?php %s;", label, detail)
         local item = M.highlight_range(text, ft, #label + 6, #text - 1)
-        return M.adjust_range(item, #label+1, label)
+        return M.adjust_range(item, #label + 1, label)
+        --
     else
         -- Handle other kinds
         local highlight_name = nil
