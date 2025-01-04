@@ -127,7 +127,7 @@ function M.highlights(completion_item, ft)
 			return
 		end
 	else
-		item = M.defaut_highlight(completion_item, ft)
+		item = { text = completion_item.label }
 	end
 
 	M.apply_post_processing(item)
@@ -169,14 +169,6 @@ function M.rust_compute_completion_highlights(completion_item, ft)
 		end
 	end
 	return vim_item
-end
-
-function M.defaut_highlight(completion_item, ft)
-	local label = completion_item.label
-	if label == nil then
-		return ""
-	end
-	return M.highlight_range(label, ft, 0, #label - 1)
 end
 
 function M._rust_compute_completion_highlights(completion_item, ft)
