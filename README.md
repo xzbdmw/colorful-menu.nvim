@@ -114,7 +114,7 @@ config = function()
             },
         },
     })
-end,
+end
 ```
 If you want to customize a bit more in those options, here is a more granular control approach:
 
@@ -160,7 +160,7 @@ config = function()
             },
         },
     })
-end, 
+end
 ```
 </details>
 
