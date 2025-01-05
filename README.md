@@ -14,7 +14,7 @@ to lspkind.nvim.
 run `nvim  -u ~/.config/nvim/repro.lua ~/.config/nvim/repro.lua` as a minimal reproduce template
 see [repro.lua](https://github.com/xzbdmw/colorful-menu.nvim/blob/master/repro.lua)
 
-Has built-in supports for **rust-analyzer(rust)**, **gopls(go)**, **typescript-language-server/vtsls**, **lua-ls**, **clangd(C)**, **intelephense(php)**, for any other language, default to directly
+Has built-in supports for **rust-analyzer(rust)**, **gopls(go)**, **typescript-language-server/vtsls**, **lua-ls**, **clangd(C)**, **intelephense(php)**, **zls(zig)** for any other language, default to directly
 apply treesitter highlight to label (feel free to open feature request for more languages).
 
 Currently supports **nvim-cmp** and **blink.cmp**.
