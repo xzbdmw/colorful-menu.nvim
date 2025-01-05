@@ -14,7 +14,7 @@ M.config = {
     ft = {
         lua = {
             -- Maybe you want to dim arguments a bit.
-            augments_hl = "@comment",
+            arguments_hl = "@comment",
         },
         go = {
             -- When true, label for field and variable will format like "foo: Foo"
@@ -373,7 +373,7 @@ function M.lua_compute_completion_highlights(completion_item, ft)
         local s, e = string.find(vim_item.text, "%b()")
         if s ~= nil and e ~= nil then
             table.insert(vim_item.highlights, {
-                M.config.ft.lua.augments_hl,
+                M.config.ft.lua.arguments_hl,
                 range = { s - 1, e },
             })
         end
