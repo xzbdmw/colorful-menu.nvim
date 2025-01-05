@@ -14,7 +14,7 @@ to lspkind.nvim.
 run `nvim  -u ~/.config/nvim/repro.lua ~/.config/nvim/repro.lua` as a minimal reproduce template
 see [repro.lua](https://github.com/xzbdmw/colorful-menu.nvim/blob/master/repro.lua)
 
-Has built-in supports for **rust-analyzer(rust)**, **gopls(go)**, **typescript-language-server/vtsls**, **lua-ls**, **clangd(C/CPP)**, **intelephense(php)**, **zls(zig)** for any other language, default to directly
+Has built-in supports for **rust-analyzer(rust)**, **gopls(go)**, **typescript-language-server/vtsls**, **lua-ls**, **clangd(C/CPP)**, **intelephense(php)**, **zls(zig)**, **roslyn(C#)**, for any other language, default to directly
 apply treesitter highlight to label (feel free to open feature request for more languages).
 
 Currently supports **nvim-cmp** and **blink.cmp**.
@@ -250,6 +250,14 @@ https://github.com/user-attachments/assets/07509e0c-8c7a-4895-8096-73343f85c583
 
 ## after:
 <img width="737" alt="image" src="https://github.com/user-attachments/assets/cf62ca84-a53f-41f2-bbcd-da724b6418c6" />
+
+# roslyn(C#) Thanks to [@seblj](https://github.com/seblj)
+## before:
+![image](https://github.com/user-attachments/assets/1b309b78-e75d-404d-ab23-e19f7b8f0e4e)
+
+## after:
+![image](https://github.com/user-attachments/assets/60bdf5ad-86e9-410b-a390-e1e8e08d1377)
+
 
 ## Contributing
 
