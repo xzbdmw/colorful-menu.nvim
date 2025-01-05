@@ -140,7 +140,7 @@ function M.blink_highlights(ctx)
         ---@diagnostic disable-next-line: undefined-field
         local highlights_info = M.highlights(ctx.item, client.name)
         if highlights_info ~= nil then
-            for _, info in ipairs(highlights_info.highlights) do
+            for _, info in ipairs(highlights_info.highlights or {}) do
                 table.insert(highlights, {
                     info.range[1],
                     info.range[2],
@@ -325,9 +325,20 @@ function M._rust_compute_completion_highlights(completion_item, ls)
             return M.highlight_range(source, ls, #prefix + 1, #source - 3)
         else
             -- Check if the detail starts with "macro_rules! "
-            if completion_item.detail and vim.startswith(completion_item.detail, "macro_rules") then
+            if completion_item.detail and vim.startswith(completion_item.detail, "macro") then
                 local source = completion_item.label
                 return M.highlight_range(source, ls, 0, #source)
+            else
+                -- simd_swizzle!()
+                return {
+                    text = completion_item.label,
+                    highlights = {
+                        {
+                            M.config.fallback_highlight,
+                            range = { 0, #completion_item.label },
+                        },
+                    },
+                }
             end
         end
         --
@@ -364,8 +375,6 @@ function M._rust_compute_completion_highlights(completion_item, ls)
             },
         }
     end
-    -- unreachable
-    return {}
 end
 
 -- `left` is inclusive and `right` is exclusive (also zero indexed), to better fit
