@@ -28,6 +28,9 @@ M.config = {
         ts_ls = {
             extra_info_hl = "@comment",
         },
+        tsserver = {
+            extra_info_hl = "@comment",
+        },
         vtsls = {
             extra_info_hl = "@comment",
         },
@@ -137,8 +140,8 @@ function M.highlights(completion_item, ls)
     elseif ls == "clangd" then
         item = require("colorful-menu.languages.cpp").clangd(completion_item, ls)
         --
-    elseif ls == "typescript-language-server" or ls == "ts_ls" then
-        item = require("colorful-menu.languages.typescript").ts_server(completion_item, ls)
+    elseif ls == "typescript-language-server" or ls == "ts_ls" or ls == "tsserver" then
+        item = require("colorful-menu.languages.typescript").ts_server(completion_item, ls, client)
         --
     elseif ls == "vtsls" then
         item = require("colorful-menu.languages.typescript").vtsls(completion_item, ls)

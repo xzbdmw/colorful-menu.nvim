@@ -43,9 +43,9 @@ function M.ts_server(completion_item, ls)
     }
 
     if detail then
+        local extra_info_hl = config.ls[ls].extra_info_hl
         table.insert(highlights, {
-            ls == "typescript-language-server" and config.ls["typescript-language-server"].extra_info_hl
-                or config.ls.ts_ls.extra_info_hl,
+            extra_info_hl,
             range = { #label + 1, #label + 1 + #detail },
         })
     end

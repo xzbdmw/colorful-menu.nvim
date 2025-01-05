@@ -45,6 +45,9 @@ return {
                 ts_ls = {
                     extra_info_hl = "@comment",
                 },
+                tsserver = {
+                    extra_info_hl = "@comment",
+                },
                 vtsls = {
                     extra_info_hl = "@comment",
                 },
