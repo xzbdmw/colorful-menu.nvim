@@ -94,17 +94,19 @@ function M.compute_highlights(str, filetype)
 
     local root = tree:root()
 
+    if not query then
+        return {}
+    end
+
     -- Iterate over all captures in the query
-    if query then
-        for id, node in query:iter_captures(root, str, 0, -1) do
-            local name = "@" .. query.captures[id] .. "." .. filetype
-            local range = { node:range() }
-            local _, nscol, _, necol = range[1], range[2], range[3], range[4]
-            table.insert(highlights, {
-                hl_group = name,
-                range = { nscol, necol },
-            })
-        end
+    for id, node in query:iter_captures(root, str, 0, -1) do
+        local name = "@" .. query.captures[id] .. "." .. filetype
+        local range = { node:range() }
+        local _, nscol, _, necol = range[1], range[2], range[3], range[4]
+        table.insert(highlights, {
+            hl_group = name,
+            range = { nscol, necol },
+        })
     end
 
     return highlights
