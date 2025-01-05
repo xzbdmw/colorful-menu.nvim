@@ -134,6 +134,9 @@ end,
 
 ## Screen
 
+Note: you may want to set CmpItemAbbrMatch or BlinkCmpLabelMatch to only has bold style (without fg) to
+have the similar effect as blow images.
+
 # gopls
 ## before:
 <img width="814" alt="image" src="https://github.com/user-attachments/assets/30614c61-32d9-4d64-8742-58dd443de6ae" />
