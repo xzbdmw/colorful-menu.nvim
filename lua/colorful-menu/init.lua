@@ -58,6 +58,31 @@ end
 
 ---@diagnostic disable-next-line: undefined-doc-name
 ---@param ctx blink.cmp.DrawItemContext
+function M.blink_components_text(ctx)
+    local highlights_info = require("colorful-menu").blink_highlights(ctx)
+    if highlights_info ~= nil then
+        return highlights_info.label
+    else
+        return ctx.label
+    end
+end
+
+---@diagnostic disable-next-line: undefined-doc-name
+---@param ctx blink.cmp.DrawItemContext
+function M.blink_components_highlight(ctx)
+    local highlights = {}
+    local highlights_info = require("colorful-menu").blink_highlights(ctx)
+    if highlights_info ~= nil then
+        highlights = highlights_info.highlights
+    end
+    for _, idx in ipairs(ctx.label_matched_indices) do
+        table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
+    end
+    return highlights
+end
+
+---@diagnostic disable-next-line: undefined-doc-name
+---@param ctx blink.cmp.DrawItemContext
 function M.blink_highlights(ctx)
     ---@diagnostic disable-next-line: undefined-field
     local client = vim.lsp.get_client_by_id(ctx.item.client_id)
@@ -94,6 +119,7 @@ function M.highlights(completion_item, ls)
         )
         return nil
     end
+
     if completion_item == nil or ls == nil or ls == "" or vim.b.ts_highlight == false then
         return nil
     end
