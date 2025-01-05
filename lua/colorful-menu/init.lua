@@ -175,7 +175,7 @@ function M.highlights(completion_item, ls)
         item = require("colorful-menu.languages.cpp").clangd(completion_item, ls)
         --
     elseif ls == "typescript-language-server" or ls == "ts_ls" or ls == "tsserver" then
-        item = require("colorful-menu.languages.typescript").ts_server(completion_item, ls, client)
+        item = require("colorful-menu.languages.typescript").ts_server(completion_item, ls)
         --
     elseif ls == "vtsls" then
         item = require("colorful-menu.languages.typescript").vtsls(completion_item, ls)
