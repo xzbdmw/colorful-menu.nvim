@@ -104,9 +104,33 @@ config = function()
                     components = {
                         label = {
                             width = { fill = true, max = 60 },
+                            text = require("colorful-menu").blink_components_text,
+                            highlight = require("colorful-menu").blink_components_highlight,
+                        },
+                    },
+                },
+            },
+        },
+    })
+end,
+```
+If you want to customize a bit more in those options, here is a More granular control approach:
+```lua
+config = function()
+    require("blink.cmp").setup({
+        completion = {
+            menu = {
+                draw = {
+                    -- We don't need label_description now because label and label_description are already
+                    -- conbined together in label by colorful-menu.nvim.
+                    columns = { { "kind_icon" }, { "label", gap = 1 } },
+                    components = {
+                        label = {
+                            width = { fill = true, max = 60 },
                             text = function(ctx)
                                 local highlights_info = require("colorful-menu").blink_highlights(ctx)
                                 if highlights_info ~= nil then
+                                    -- Or you want to add more item to label
                                     return highlights_info.label
                                 else
                                     return ctx.label
@@ -121,6 +145,7 @@ config = function()
                                 for _, idx in ipairs(ctx.label_matched_indices) do
                                     table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
                                 end
+                                -- Do something else
                                 return highlights
                             end,
                         },
