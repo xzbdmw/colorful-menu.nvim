@@ -489,7 +489,7 @@ function M._c_compute_completion_highlights(completion_item, ft)
     local label = completion_item.label
     local kind = completion_item.kind
     local detail = completion_item.detail
-    local labelDetails = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
+    local labelDetails = completion_item.labelDetails
 
     -- If no kind, just fallback to highlighting the cleaned-up label
     if not kind then
@@ -497,29 +497,39 @@ function M._c_compute_completion_highlights(completion_item, ft)
     end
 
     -- Fields with detail => "detail label" => highlight in "struct S { ... }"
-    if (kind == M.Kind.Field) and detail and #detail > 0 then
+    if (kind == M.Kind.Field) and detail then
         local text = string.format("%s %s", detail, label)
         local source = string.format("struct S { %s }", text)
         -- offset 11 is after "struct S { "
         return M.highlight_range(source, ft, 11, 11 + #text)
 
         -- Constants or Variables with detail => "detail label", highlight entire text
-    elseif (kind == M.Kind.Constant or kind == M.Kind.Variable) and detail and #detail > 0 then
-        -- &chunk;Chunk -> chunk: Chunk
-        local text = string.format("&%s;%s", label, detail)
-        return M.highlight_range(text, ft, 1, #text)
+    elseif (kind == M.Kind.Constant or kind == M.Kind.Variable) and detail then
+        local text = string.format("%s;%s", label, detail)
+        -- void foo() {&x;std::unique_ptr<Foo>}
+        --             |         |
+        --          @variable    |-- @type
+        -- later factor to `x std::unique_ptr<Foo>`.
+        local source = string.format("void foo(){ &%s }", text)
+        return M.highlight_range(source, ft, 13, 13 + #text)
 
         -- Functions or Methods with detail => "detail label", might find '('
-    elseif (kind == M.Kind.Function or kind == M.Kind.Method) and detail and #detail > 0 then
-        local text = string.format("void %s%s;%s", label, labelDetails.detail or "", detail)
+    elseif (kind == M.Kind.Function or kind == M.Kind.Method) and detail then
+        local text = string.format("void %s%s;%s", label, labelDetails and labelDetails.detail or "", detail)
         return M.highlight_range(text, ft, 5, #text)
         --
     else
         local highlight_name = nil
-        if kind == M.Kind.Struct or kind == M.Kind.Interface or kind == M.Kind.Class or kind == M.Kind.Enum then
+        if kind == M.Kind.Struct then
             highlight_name = "@type"
+        elseif kind == M.Kind.Class then
+            highlight_name = M.hl_exist_or("@lsp.type.class", "@variant")
         elseif kind == M.Kind.EnumMember then
-            highlight_name = "@variant"
+            highlight_name = M.hl_exist_or("@lsp.type.enumMember", "@variant")
+        elseif kind == M.Kind.Enum then
+            highlight_name = M.hl_exist_or("@lsp.type.enum", "@type")
+        elseif kind == M.Kind.Interface then
+            highlight_name = M.hl_exist_or("@lsp.type.interface", "@type")
         elseif kind == M.Kind.Keyword then
             highlight_name = "@keyword"
         elseif kind == M.Kind.Value or kind == M.Kind.Constant then
