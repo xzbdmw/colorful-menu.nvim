@@ -515,7 +515,11 @@ function M._c_compute_completion_highlights(completion_item, ft)
 
         -- Functions or Methods with detail => "detail label", might find '('
     elseif (kind == M.Kind.Function or kind == M.Kind.Method) and detail then
-        local text = string.format("void %s%s;%s", label, labelDetails and labelDetails.detail or "", detail)
+        local signature = ""
+        if labelDetails and labelDetails.detail then
+            signature = labelDetails.detail
+        end
+        local text = string.format("void %s%s;%s", label, signature, detail)
         return M.highlight_range(text, ft, 5, #text)
         --
     else
