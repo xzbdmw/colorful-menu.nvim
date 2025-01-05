@@ -38,15 +38,8 @@ function M._clangd(completion_item, ls)
         return utils.highlight_range(label, ls, 0, #label)
     end
 
-    -- Fields with detail => "detail label" => highlight in "struct S { ... }"
-    if (kind == Kind.Field) and detail then
-        local text = string.format("%s %s", detail, label)
-        local source = string.format("struct S { %s }", text)
-        -- offset 11 is after "struct S { "
-        return utils.highlight_range(source, ls, 11, 11 + #text)
-
-        -- Constants or Variables with detail => "detail label", highlight entire text
-    elseif (kind == Kind.Constant or kind == Kind.Variable or kind == Kind.Field) and detail then
+    -- Constants or Variables with detail => "detail label", highlight entire text
+    if (kind == Kind.Constant or kind == Kind.Variable or kind == Kind.Field) and detail then
         local text = string.format("%s;%s", label, detail)
         -- void foo() {&x;std::unique_ptr<Foo>}
         --             |         |
