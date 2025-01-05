@@ -156,20 +156,16 @@ function M.blink_highlights(ctx)
     return nil
 end
 
-local i = 0
 ---@param completion_item lsp.CompletionItem
 ---@param ls string?
 ---@return CMHighlights?
 function M.highlights(completion_item, ls)
     if ls == vim.bo.filetype then
-        if i == 0 then
-            vim.notify(
-                "colorful-menu.nvim: Integration with nvim-cmp or blink.cmp has been simplified, and legacy per-filetype options is also deprecated"
-                    .. " to prefer per-language-server options, please see README",
-                vim.log.levels.WARN
-            )
-            i = i + 1
-        end
+        vim.notify_once(
+            "colorful-menu.nvim: Integration with nvim-cmp or blink.cmp has been simplified, and legacy per-filetype options is also deprecated"
+                .. " to prefer per-language-server options, please see README",
+            vim.log.levels.WARN
+        )
         return nil
     end
     if completion_item == nil or ls == nil or ls == "" or vim.b.ts_highlight == false then
