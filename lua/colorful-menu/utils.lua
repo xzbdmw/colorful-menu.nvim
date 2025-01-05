@@ -8,7 +8,7 @@ local MAX_PARSER_CACHE_SIZE = 10000
 ---@param str string
 ---@param ls string
 ---@return CMHighlights
-function M.compute_highlights(str, ls)
+local function compute_highlights(str, ls)
     local highlights = {}
 
     local lang = vim.treesitter.language.get_lang(vim.bo.filetype)
@@ -85,7 +85,7 @@ end
 ---@return CMHighlights
 function M.highlight_range(text, ls, left, right)
     local highlights = {}
-    local full_hl = M.compute_highlights(text, ls)
+    local full_hl = compute_highlights(text, ls)
 
     for _, hl in ipairs(full_hl) do
         local s, e = hl.range[1], hl.range[2]
@@ -140,17 +140,6 @@ function M.hl_exist_or(hl_group, fallback)
     else
         return fallback
     end
-end
-
----@param completion_item lsp.CompletionItem
----@param ls string
----@return CMHighlights?
-function M.default_highlight(completion_item, ls)
-    local label = completion_item.label
-    if label == nil then
-        return nil
-    end
-    return M.highlight_range(label, ls, 0, #label)
 end
 
 return M

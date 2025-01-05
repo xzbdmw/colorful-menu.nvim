@@ -110,6 +110,40 @@ function M.blink_highlights(ctx)
     return nil
 end
 
+---@param item CMHighlights
+---@return CMHighlights?
+local function apply_post_processing(item)
+    -- if the user override or fallback logic didn't produce a table, bail
+    if type(item) ~= "table" or not item.text then
+        return item
+    end
+
+    local text = item.text
+    local max_width = M.config.max_width
+
+    if max_width and max_width > 0 then
+        -- if text length is beyond max_width, truncate
+        local display_width = vim.fn.strdisplaywidth(text)
+        if display_width > max_width then
+            -- We can remove from the end
+            -- or do partial truncation using `strcharpart` or `strdisplaywidth` logic.
+            local truncated = vim.fn.strcharpart(text, 0, max_width - 1) .. "…"
+            item.text = truncated
+        end
+    end
+end
+
+---@param completion_item lsp.CompletionItem
+---@param ls string
+---@return CMHighlights?
+local function default_highlight(completion_item, ls)
+    local label = completion_item.label
+    if label == nil then
+        return nil
+    end
+    return require("colorful-menu.utils").highlight_range(label, ls, 0, #label)
+end
+
 ---@param completion_item lsp.CompletionItem
 ---@param ls string?
 ---@return CMHighlights?
@@ -157,37 +191,14 @@ function M.highlights(completion_item, ls)
         if not M.config.ls.fallback then
             return nil
         end
-        item = require("colorful-menu.utils").default_highlight(completion_item, ls)
+        item = default_highlight(completion_item, ls)
     end
 
     if item then
-        M.apply_post_processing(item)
+        apply_post_processing(item)
     end
 
     return item
-end
-
----@param item CMHighlights
----@return CMHighlights?
-function M.apply_post_processing(item)
-    -- if the user override or fallback logic didn't produce a table, bail
-    if type(item) ~= "table" or not item.text then
-        return item
-    end
-
-    local text = item.text
-    local max_width = M.config.max_width
-
-    if max_width and max_width > 0 then
-        -- if text length is beyond max_width, truncate
-        local display_width = vim.fn.strdisplaywidth(text)
-        if display_width > max_width then
-            -- We can remove from the end
-            -- or do partial truncation using `strcharpart` or `strdisplaywidth` logic.
-            local truncated = vim.fn.strcharpart(text, 0, max_width - 1) .. "…"
-            item.text = truncated
-        end
-    end
 end
 
 ---@param opts ColorfulMenuConfig

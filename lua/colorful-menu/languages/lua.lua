@@ -7,24 +7,7 @@ local M = {}
 ---@param completion_item lsp.CompletionItem
 ---@param ls string
 ---@return CMHighlights
-function M.lua_ls(completion_item, ls)
-    local vim_item = M._lua_compute_completion_highlights(completion_item, ls)
-    if vim_item.text ~= nil then
-        local s, e = string.find(vim_item.text, "%b()")
-        if s ~= nil and e ~= nil then
-            table.insert(vim_item.highlights, {
-                config.ls.lua_ls.arguments_hl,
-                range = { s - 1, e },
-            })
-        end
-    end
-    return vim_item
-end
-
----@param completion_item lsp.CompletionItem
----@param ls string
----@return CMHighlights
-function M._lua_compute_completion_highlights(completion_item, ls)
+local function _lua_compute_completion_highlights(completion_item, ls)
     local label = completion_item.label
     local kind = completion_item.kind
 
@@ -38,6 +21,23 @@ function M._lua_compute_completion_highlights(completion_item, ls)
     else
         return utils.highlight_range(label, ls, 0, #label)
     end
+end
+
+---@param completion_item lsp.CompletionItem
+---@param ls string
+---@return CMHighlights
+function M.lua_ls(completion_item, ls)
+    local vim_item = _lua_compute_completion_highlights(completion_item, ls)
+    if vim_item.text ~= nil then
+        local s, e = string.find(vim_item.text, "%b()")
+        if s ~= nil and e ~= nil then
+            table.insert(vim_item.highlights, {
+                config.ls.lua_ls.arguments_hl,
+                range = { s - 1, e },
+            })
+        end
+    end
+    return vim_item
 end
 
 return M
