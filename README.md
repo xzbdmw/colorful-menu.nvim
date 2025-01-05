@@ -42,6 +42,9 @@ return {
                 ["typescript-language-server"] = {
                     extra_info_hl = "@comment",
                 },
+                ["typescript-tools"] = {
+                    extra_info_hl = "@comment",
+                },
                 ts_ls = {
                     extra_info_hl = "@comment",
                 },
@@ -57,6 +60,9 @@ return {
                 },
                 clangd = {
                     -- Such as "From <stdio.h>".
+                    extra_info_hl = "@comment",
+                },
+                roslyn = {
                     extra_info_hl = "@comment",
                 },
 
