@@ -3,11 +3,18 @@ local insertTextFormat = { PlainText = 1, Snippet = 2 }
 -- stylua: ignore
 M.Kind = { Text = 1, Method = 2, Function = 3, Constructor = 4, Field = 5, Variable = 6, Class = 7, Interface = 8, Module = 9, Property = 10, Unit = 11, Value = 12, Enum = 13, Keyword = 14, Snippet = 15, Color = 16, File = 17, Reference = 18, Folder = 19, EnumMember = 20, Constant = 21, Struct = 22, Event = 23, Operator = 24, TypeParameter = 25 }
 
+---@alias CMHighlightRange {hl_group: string, range: integer[]}
+---
+---@class CMHighlights
+---@field text string
+---@field highlights CMHighlightRange[]
+
+---@class ColorfulMenuConfig
 M.config = {
     ft = {
         lua = {
             -- Maybe you want to dim arguments a bit.
-            auguments_hl = "@comment",
+            augments_hl = "@comment",
         },
         go = {
             -- When true, label for field and variable will format like "foo: Foo"
@@ -45,6 +52,9 @@ M.config = {
 local query_cache = {}
 local parser_cache = {}
 
+---@param str string
+---@param filetype string
+---@return CMHighlights
 function M.compute_highlights(str, filetype)
     local highlights = {}
 
@@ -83,20 +93,26 @@ function M.compute_highlights(str, filetype)
     end
 
     local root = tree:root()
+
     -- Iterate over all captures in the query
-    for id, node in query:iter_captures(root, str, 0, -1) do
-        local name = "@" .. query.captures[id] .. "." .. filetype
-        local range = { node:range() }
-        local _, nscol, _, necol = range[1], range[2], range[3], range[4]
-        table.insert(highlights, {
-            hl_group = name,
-            range = { nscol, necol },
-        })
+    if query then
+        for id, node in query:iter_captures(root, str, 0, -1) do
+            local name = "@" .. query.captures[id] .. "." .. filetype
+            local range = { node:range() }
+            local _, nscol, _, necol = range[1], range[2], range[3], range[4]
+            table.insert(highlights, {
+                hl_group = name,
+                range = { nscol, necol },
+            })
+        end
     end
 
     return highlights
 end
 
+---@param completion_item lsp.CompletionItem
+---@param ft string?
+---@return CMHighlights?
 function M.highlights(completion_item, ft)
     if ft == nil or ft == "" or vim.b.ts_highlight == false then
         return nil
@@ -140,10 +156,15 @@ function M.highlights(completion_item, ft)
         item = M.default_highlight(completion_item, ft)
     end
 
-    M.apply_post_processing(item)
+    if item then
+        M.apply_post_processing(item)
+    end
+
     return item
 end
 
+---@param item CMHighlights
+---@return CMHighlights?
 function M.apply_post_processing(item)
     -- if the user override or fallback logic didn't produce a table, bail
     if type(item) ~= "table" or not item.text then
@@ -152,6 +173,7 @@ function M.apply_post_processing(item)
 
     local text = item.text
     local max_width = M.config.max_width
+
     if max_width and max_width > 0 then
         -- if text length is beyond max_width, truncate
         local display_width = vim.fn.strdisplaywidth(text)
@@ -164,6 +186,9 @@ function M.apply_post_processing(item)
     end
 end
 
+---@param completion_item lsp.CompletionItem
+---@param ft string
+---@return CMHighlights
 function M.rust_compute_completion_highlights(completion_item, ft)
     local vim_item = M._rust_compute_completion_highlights(completion_item, ft)
     if vim_item.text ~= nil then
@@ -180,14 +205,19 @@ function M.rust_compute_completion_highlights(completion_item, ft)
     return vim_item
 end
 
+---@param completion_item lsp.CompletionItem
+---@param ft string
+---@return CMHighlights?
 function M.default_highlight(completion_item, ft)
     local label = completion_item.label
     if label == nil then
-        return ""
+        return nil
     end
     return M.highlight_range(label, ft, 0, #label)
 end
 
+---@param hl_group string
+---@param fallback string
 function M.hl_exist_or(hl_group, fallback)
     local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = hl_group })
     if ok and hl ~= nil then
@@ -197,6 +227,9 @@ function M.hl_exist_or(hl_group, fallback)
     end
 end
 
+---@param completion_item lsp.CompletionItem
+---@param ft string
+---@return CMHighlights
 function M._rust_compute_completion_highlights(completion_item, ft)
     local detail = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
     local function_signature = completion_item.labelDetails and completion_item.labelDetails.description
@@ -234,7 +267,7 @@ function M._rust_compute_completion_highlights(completion_item, ft)
             label = completion_item.label .. "()"
         end
         local regex_pattern = "%b()"
-        local prefix, suffix = string.match(function_signature, "^(.*fn)(.*)$")
+        local prefix, suffix = string.match(function_signature or "", "^(.*fn)(.*)$")
         if prefix ~= nil and suffix ~= nil then
             local start_pos = string.find(suffix, "(", nil, true)
             if start_pos then
@@ -298,6 +331,12 @@ end
 
 -- `left` is inclusive and `right` is exclusive (also zero indexed), to better fit
 -- `nvim_buf_set_extmark` semantic, so `M.highlight_range(text, ft, 0, #text)` is the entire range.
+--
+---@param text string
+---@param ft string
+---@param left integer
+---@param right integer
+---@return CMHighlights
 function M.highlight_range(text, ft, left, right)
     local highlights = {}
     local full_hl = M.compute_highlights(text, ft)
@@ -325,13 +364,16 @@ function M.highlight_range(text, ft, left, right)
     }
 end
 
+---@param completion_item lsp.CompletionItem
+---@param ft string
+---@return CMHighlights
 function M.lua_compute_completion_highlights(completion_item, ft)
     local vim_item = M._lua_compute_completion_highlights(completion_item, ft)
     if vim_item.text ~= nil then
         local s, e = string.find(vim_item.text, "%b()")
         if s ~= nil and e ~= nil then
             table.insert(vim_item.highlights, {
-                M.config.ft.lua.auguments_hl,
+                M.config.ft.lua.augments_hl,
                 range = { s - 1, e },
             })
         end
@@ -339,6 +381,9 @@ function M.lua_compute_completion_highlights(completion_item, ft)
     return vim_item
 end
 
+---@param completion_item lsp.CompletionItem
+---@param ft string
+---@return CMHighlights
 function M._lua_compute_completion_highlights(completion_item, ft)
     local label = completion_item.label
     local kind = completion_item.kind
@@ -355,6 +400,9 @@ function M._lua_compute_completion_highlights(completion_item, ft)
     end
 end
 
+---@param item lsp.CompletionItem
+---@param language string
+---@return CMHighlights
 function M.typescript_language_server_label_for_completion(item, language)
     local label = item.label
     local detail = item.detail
@@ -404,7 +452,10 @@ function M.typescript_language_server_label_for_completion(item, language)
 end
 
 -- see https://github.com/zed-industries/zed/pull/13043
--- Untestd.
+-- Untested.
+---@param completion_item lsp.CompletionItem
+---@param language string
+---@return CMHighlights
 function M.vtsls_compute_completion_highlights(completion_item, language)
     local function one_line(s)
         s = s:gsub("    ", "")
@@ -413,7 +464,6 @@ function M.vtsls_compute_completion_highlights(completion_item, language)
     end
 
     local label = completion_item.label
-    local len = #label
 
     local kind = completion_item.kind
     if not kind then
@@ -467,6 +517,9 @@ function M.vtsls_compute_completion_highlights(completion_item, language)
     }
 end
 
+---@param completion_item lsp.CompletionItem
+---@param ft string
+---@return CMHighlights
 function M.c_compute_completion_highlights(completion_item, ft)
     local vim_item = M._c_compute_completion_highlights(completion_item, ft)
     if vim_item.text ~= nil then
@@ -485,6 +538,10 @@ function M.c_compute_completion_highlights(completion_item, ft)
 end
 
 -- Add this in your module, alongside the other compute functions
+---
+---@param completion_item lsp.CompletionItem
+---@param ft string
+---@return CMHighlights
 function M._c_compute_completion_highlights(completion_item, ft)
     local label = completion_item.label
     local kind = completion_item.kind
@@ -510,7 +567,7 @@ function M._c_compute_completion_highlights(completion_item, ft)
         return M.highlight_range(text, ft, 1, #text)
 
         -- Functions or Methods with detail => "detail label", might find '('
-    elseif (kind == M.Kind.Function or kind == M.Kind.Method) and detail and #detail > 0 then
+    elseif (kind == M.Kind.Function or kind == M.Kind.Method) and detail and #detail > 0 and labelDetails then
         local text = string.format("void %s%s;%s", label, labelDetails.detail or "", detail)
         return M.highlight_range(text, ft, 5, #text)
         --
@@ -551,6 +608,9 @@ function M._c_compute_completion_highlights(completion_item, ft)
     }
 end
 
+---@param completion_item lsp.CompletionItem
+---@param ft string
+---@return CMHighlights
 function M.go_compute_completion_highlights(completion_item, ft)
     local label = completion_item.label
     local detail = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
@@ -640,6 +700,10 @@ function M.go_compute_completion_highlights(completion_item, ft)
     return {}
 end
 
+---@param item CMHighlights
+---@param name_offset integer
+---@param label string
+---@return CMHighlights
 function M.adjust_range(item, name_offset, label)
     if name_offset == 0 then
         return item
@@ -657,6 +721,9 @@ function M.adjust_range(item, name_offset, label)
     return item
 end
 
+---@param completion_item lsp.CompletionItem
+---@param ft string
+---@return CMHighlights
 function M.php_intelephense_compute_completion_highlights(completion_item, ft)
     local label = completion_item.label
     local detail = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
@@ -705,6 +772,7 @@ function M.php_intelephense_compute_completion_highlights(completion_item, ft)
     end
 end
 
+---@param opts ColorfulMenuConfig
 function M.setup(opts)
     opts = opts or {}
     M.config = vim.tbl_deep_extend("force", M.config, opts)
