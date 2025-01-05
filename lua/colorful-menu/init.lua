@@ -119,7 +119,7 @@ function M.highlights(completion_item, ft)
         item = M.rust_compute_completion_highlights(completion_item, ft)
     elseif ft == "lua" then
         item = M.lua_compute_completion_highlights(completion_item, ft)
-    elseif ft == "c" then
+    elseif ft == "c" or ft == "cpp" then
         item = M.c_compute_completion_highlights(completion_item, ft)
     elseif ft == "php" then
         item = M.php_intelephense_compute_completion_highlights(completion_item, ft)
