@@ -32,7 +32,7 @@ return {
             ls = {
                 lua_ls = {
                     -- Maybe you want to dim arguments a bit.
-                    auguments_hl = "@comment",
+                    arguments_hl = "@comment",
                 },
                 gopls = {
                     -- When true, label for field and variable will format like "foo: Foo"
