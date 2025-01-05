@@ -489,7 +489,7 @@ function M._c_compute_completion_highlights(completion_item, ft)
     local label = completion_item.label
     local kind = completion_item.kind
     local detail = completion_item.detail
-    local labelDetails = completion_item.labelDetails
+    local labelDetails = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
 
     -- If no kind, just fallback to highlighting the cleaned-up label
     if not kind then
