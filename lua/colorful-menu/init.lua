@@ -42,6 +42,9 @@ M.config = {
             -- Such as "From <stdio.h>".
             extra_info_hl = "@comment",
         },
+        roslyn = {
+            extra_info_hl = "@comment",
+        },
         fallback = true,
     },
     fallback_highlight = "@variable",
@@ -185,6 +188,9 @@ function M.highlights(completion_item, ls)
         --
     elseif ls == "intelephense" then
         item = require("colorful-menu.languages.php").intelephense(completion_item, ls)
+        --
+    elseif ls == "roslyn" then
+        item = require("colorful-menu.languages.cs").roslyn(completion_item, ls)
         --
     else
         -- No languages detected so check if we should highlight with default or not
