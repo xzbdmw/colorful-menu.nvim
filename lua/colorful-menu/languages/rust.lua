@@ -8,26 +8,7 @@ local M = {}
 ---@param completion_item lsp.CompletionItem
 ---@param ls string
 ---@return CMHighlights
-function M.rust_analyzer(completion_item, ls)
-    local vim_item = M._rust_analyzer(completion_item, ls)
-    if vim_item.text ~= nil then
-        for _, match in ipairs({ "%(use .-%)", "%(as .-%)", "%(alias .-%)" }) do
-            local s, e = string.find(vim_item.text, match)
-            if s ~= nil and e ~= nil then
-                table.insert(vim_item.highlights, {
-                    config.ls["rust-analyzer"].extra_info_hl,
-                    range = { s - 1, e },
-                })
-            end
-        end
-    end
-    return vim_item
-end
-
----@param completion_item lsp.CompletionItem
----@param ls string
----@return CMHighlights
-function M._rust_analyzer(completion_item, ls)
+local function _rust_analyzer(completion_item, ls)
     local detail = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
     local function_signature = completion_item.labelDetails and completion_item.labelDetails.description
         or completion_item.detail
@@ -133,6 +114,25 @@ function M._rust_analyzer(completion_item, ls)
             },
         }
     end
+end
+
+---@param completion_item lsp.CompletionItem
+---@param ls string
+---@return CMHighlights
+function M.rust_analyzer(completion_item, ls)
+    local vim_item = _rust_analyzer(completion_item, ls)
+    if vim_item.text ~= nil then
+        for _, match in ipairs({ "%(use .-%)", "%(as .-%)", "%(alias .-%)" }) do
+            local s, e = string.find(vim_item.text, match)
+            if s ~= nil and e ~= nil then
+                table.insert(vim_item.highlights, {
+                    config.ls["rust-analyzer"].extra_info_hl,
+                    range = { s - 1, e },
+                })
+            end
+        end
+    end
+    return vim_item
 end
 
 return M

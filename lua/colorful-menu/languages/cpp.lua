@@ -7,27 +7,7 @@ local M = {}
 ---@param completion_item lsp.CompletionItem
 ---@param ls string
 ---@return CMHighlights
-function M.clangd(completion_item, ls)
-    local vim_item = M._clangd(completion_item, ls)
-    if vim_item.text ~= nil then
-        vim_item.text = vim_item.text:gsub(";", " ")
-        local document = completion_item.documentation
-        if document and document.value and vim.startswith(document.value, "From ") then
-            local len = #vim_item.text
-            vim_item.text = string.gsub(vim_item.text .. "  " .. document.value, "\n", " ")
-            table.insert(vim_item.highlights, {
-                config.ls.clangd.extra_info_hl,
-                range = { len + 2, #vim_item.text },
-            })
-        end
-    end
-    return vim_item
-end
-
----@param completion_item lsp.CompletionItem
----@param ls string
----@return CMHighlights
-function M._clangd(completion_item, ls)
+local function _clangd(completion_item, ls)
     local label = completion_item.label
     local kind = completion_item.kind
     local detail = completion_item.detail
@@ -96,6 +76,26 @@ function M._clangd(completion_item, ls)
         text = label,
         highlights = {},
     }
+end
+
+---@param completion_item lsp.CompletionItem
+---@param ls string
+---@return CMHighlights
+function M.clangd(completion_item, ls)
+    local vim_item = _clangd(completion_item, ls)
+    if vim_item.text ~= nil then
+        vim_item.text = vim_item.text:gsub(";", " ")
+        local document = completion_item.documentation
+        if document and document.value and vim.startswith(document.value, "From ") then
+            local len = #vim_item.text
+            vim_item.text = string.gsub(vim_item.text .. "  " .. document.value, "\n", " ")
+            table.insert(vim_item.highlights, {
+                config.ls.clangd.extra_info_hl,
+                range = { len + 2, #vim_item.text },
+            })
+        end
+    end
+    return vim_item
 end
 
 return M
