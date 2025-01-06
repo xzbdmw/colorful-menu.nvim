@@ -66,6 +66,7 @@ return {
                     extra_info_hl = "@comment",
                 },
                 basedpyright = {
+                    -- It is usually import path such as "os"
                     extra_info_hl = "@comment",
                 },
 

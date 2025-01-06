@@ -9,8 +9,8 @@ local M = {}
 ---@return CMHighlights
 function M.basedpyright(completion_item, ls)
     local label = completion_item.label
-    local detail = completion_item.detail
     local kind = completion_item.kind
+    local path = vim.tbl_get(completion_item, "labelDetails", "description")
 
     if not kind then
         return utils.highlight_range(label, ls, 0, #label)
@@ -45,6 +45,43 @@ function M.basedpyright(completion_item, ls)
             range = { 0, #label },
         },
     }
+    local highlights = {
+        {
+            highlight_name,
+            range = { 0, #label },
+        },
+    }
+
+    -- Blink has a concept of grid layout while nvim-cmp doesn't,
+    -- so we need to emulate what is done via
+    -- `columns = { { "kind_icon" }, { "label", "label_description", gap = 1 } }` in blink.
+    -- Only when user does not set label_description, or using nvim-cmp,
+    -- will we add the extra path information behind.
+    local has_label_desscription = false
+    local success, columns = pcall(function()
+        return require("blink.cmp.config").completion.menu.draw.columns
+    end)
+    if success and path then
+        for _, column in ipairs(columns or {}) do
+            for _, other_component_name in ipairs(column) do
+                if other_component_name == "label_description" then
+                    has_label_desscription = true
+                end
+            end
+        end
+    end
+
+    if not has_label_desscription and path then
+        local extra_info_hl = config.ls[ls].extra_info_hl
+        table.insert(highlights, {
+            extra_info_hl,
+            range = { #label + 1, #label + 2 + #path },
+        })
+        return {
+            text = label .. " " .. path,
+            highlights = highlights,
+        }
+    end
 
     return {
         text = label,
