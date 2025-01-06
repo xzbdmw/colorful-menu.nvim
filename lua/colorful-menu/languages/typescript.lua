@@ -43,7 +43,7 @@ function M.ts_server(completion_item, ls)
     }
 
     if detail then
-        local extra_info_hl = config.ls[ls].extra_info_hl
+        local extra_info_hl = config.ls.ts_ls.extra_info_hl
         table.insert(highlights, {
             extra_info_hl,
             range = { #label + 1, #label + 1 + #detail },

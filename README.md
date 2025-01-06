@@ -50,16 +50,8 @@ return {
                     -- instead of go's original syntax "foo Foo".
                     add_colon_before_type = false,
                 },
-                ["typescript-language-server"] = {
-                    extra_info_hl = "@comment",
-                },
-                ["typescript-tools"] = {
-                    extra_info_hl = "@comment",
-                },
+                -- for lsp_config or typescript-tools
                 ts_ls = {
-                    extra_info_hl = "@comment",
-                },
-                tsserver = {
                     extra_info_hl = "@comment",
                 },
                 vtsls = {
