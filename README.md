@@ -14,7 +14,7 @@ to lspkind.nvim.
 run `nvim  -u ~/.config/nvim/repro.lua ~/.config/nvim/repro.lua` as a minimal reproduce template
 see [repro.lua](https://github.com/xzbdmw/colorful-menu.nvim/blob/master/repro.lua)
 
-Has built-in supports for **rust-analyzer(rust)**, **gopls(go)**, **typescript-language-server/vtsls**, **lua-ls**, **clangd(C/CPP)**, **intelephense(php)**, **zls(zig)**, **roslyn(C#)**, for any other language, default to directly
+Has built-in supports for **rust-analyzer(rust)**, **gopls(go)**, **typescript-language-server/vtsls**, **lua-ls**, **clangd(C/CPP)**, **intelephense(php)**, **zls(zig)**, **roslyn(C#)**, **basedpyright(python)**, for any other language, default to directly
 apply treesitter highlight to label (feel free to open feature request for more languages).
 
 Currently supports **nvim-cmp** and **blink.cmp**.
@@ -65,6 +65,9 @@ return {
                 roslyn = {
                     extra_info_hl = "@comment",
                 },
+                basedpyright = {
+                    extra_info_hl = "@comment",
+                },
 
                 -- If true, try to highlight "not supported" languages.
                 fallback = true,
@@ -109,6 +112,10 @@ config = function()
                 draw = {
                     -- We don't need label_description now because label and label_description are already
                     -- conbined together in label by colorful-menu.nvim.
+                    --
+                    -- However, for `basedpyright`, it is recommend to set
+                    -- columns = { { "kind_icon" }, { "label", "label_description", gap = 1 } },
+                    -- because the `label_description` will only be import path.
                     columns = { { "kind_icon" }, { "label", gap = 1 } },
                     components = {
                         label = {

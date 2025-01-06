@@ -48,6 +48,9 @@ M.config = {
         roslyn = {
             extra_info_hl = "@comment",
         },
+        basedpyright = {
+            extra_info_hl = "@comment",
+        },
         fallback = true,
     },
     fallback_highlight = "@variable",
@@ -72,6 +75,7 @@ function M.blink_components_text(ctx)
     if highlights_info ~= nil then
         return highlights_info.label
     else
+        ---@diagnostic disable-next-line: undefined-field
         return ctx.label
     end
 end
@@ -84,6 +88,7 @@ function M.blink_components_highlight(ctx)
     if highlights_info ~= nil then
         highlights = highlights_info.highlights
     end
+    ---@diagnostic disable-next-line: undefined-field
     for _, idx in ipairs(ctx.label_matched_indices) do
         table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
     end
@@ -194,6 +199,9 @@ function M.highlights(completion_item, ls)
         --
     elseif ls == "roslyn" then
         item = require("colorful-menu.languages.cs").roslyn(completion_item, ls)
+        --
+    elseif ls == "basedpyright" then
+        item = require("colorful-menu.languages.python").basedpyright(completion_item, ls)
         --
     else
         -- No languages detected so check if we should highlight with default or not
