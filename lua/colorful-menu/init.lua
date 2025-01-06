@@ -37,7 +37,7 @@ M.config = {
         vtsls = {
             extra_info_hl = "@comment",
         },
-        rust_analyzer = {
+        ["rust-analyzer"] = {
             -- Such as (as Iterator), (use std::io).
             extra_info_hl = "@comment",
         },
@@ -176,7 +176,7 @@ function M.highlights(completion_item, ls)
     if ls == "gopls" then
         item = require("colorful-menu.languages.go").gopls(completion_item, ls)
         --
-    elseif ls == "rust_analyzer" then
+    elseif ls == "rust-analyzer" or ls == "rust_analyzer" then
         item = require("colorful-menu.languages.rust").rust_analyzer(completion_item, ls)
         --
     elseif ls == "lua_ls" then
