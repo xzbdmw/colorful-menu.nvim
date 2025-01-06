@@ -126,7 +126,7 @@ function M.rust_analyzer(completion_item, ls)
             local s, e = string.find(vim_item.text, match)
             if s ~= nil and e ~= nil then
                 table.insert(vim_item.highlights, {
-                    config.ls["rust-analyzer"].extra_info_hl,
+                    config.ls.rust_analyzer.extra_info_hl,
                     range = { s - 1, e },
                 })
             end
