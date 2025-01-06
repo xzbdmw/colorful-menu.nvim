@@ -45,12 +45,6 @@ function M.basedpyright(completion_item, ls)
             range = { 0, #label },
         },
     }
-    local highlights = {
-        {
-            highlight_name,
-            range = { 0, #label },
-        },
-    }
 
     -- Blink has a concept of grid layout while nvim-cmp doesn't,
     -- so we need to emulate what is done via

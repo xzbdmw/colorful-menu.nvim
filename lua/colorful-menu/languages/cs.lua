@@ -31,6 +31,8 @@ function M.roslyn(completion_item, ls)
         highlight_name = "@property"
     elseif kind == Kind.Variable then
         highlight_name = "@variable"
+    elseif kind == Kind.Keyword then
+        highlight_name = "@keyword"
     else
         highlight_name = config.fallback_highlight
     end
