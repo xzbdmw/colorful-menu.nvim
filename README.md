@@ -15,7 +15,7 @@ run `nvim  -u ~/.config/nvim/repro.lua ~/.config/nvim/repro.lua` as a minimal re
 see [repro.lua](https://github.com/xzbdmw/colorful-menu.nvim/blob/master/repro.lua)
 
 Has built-in supports for 
-- [**rust-analyzer (rust)**](#rust-analyzer), 
+- [**rust_analyzer (rust)**](#rust_analyzer), 
 - [**gopls (go)**](#gopls), 
 - [**typescript-language-server/vtsls (TypeScript)**](#typescript-language-server), 
 - [**lua-ls (Lua)**](#lua_ls), 
@@ -65,7 +65,7 @@ return {
                 vtsls = {
                     extra_info_hl = "@comment",
                 },
-                ["rust-analyzer"] = {
+                rust_analyzer = {
                     -- Such as (as Iterator), (use std::io).
                     extra_info_hl = "@comment",
                 },
@@ -208,7 +208,7 @@ have the similar effect as blow images.
 https://github.com/user-attachments/assets/fe72a70b-28ec-460f-9b77-12c95bf74e2e
 </details>
 
-# rust-analyzer
+# rust_analyzer
 ## before:
 <img width="669" alt="image" src="https://github.com/user-attachments/assets/1c053055-48c7-4b2f-b228-daa77f740eef" />
 
