@@ -48,70 +48,6 @@ M.config = {
     max_width = 60,
 }
 
----@diagnostic disable-next-line: undefined-doc-name
----@param entry cmp.Entry
-function M.cmp_highlights(entry)
-    local client = vim.tbl_get(entry, "source", "source", "client") -- For example `lua_ls` etc
-    if client and not client.is_stopped() then
-        ---@diagnostic disable-next-line: undefined-field
-        return M.highlights(entry:get_completion_item(), client.name)
-    end
-    return nil
-end
-
----@diagnostic disable-next-line: undefined-doc-name
----@param ctx blink.cmp.DrawItemContext
-function M.blink_components_text(ctx)
-    local highlights_info = require("colorful-menu").blink_highlights(ctx)
-    if highlights_info ~= nil then
-        return highlights_info.label
-    else
-        ---@diagnostic disable-next-line: undefined-field
-        return ctx.label
-    end
-end
-
----@diagnostic disable-next-line: undefined-doc-name
----@param ctx blink.cmp.DrawItemContext
-function M.blink_components_highlight(ctx)
-    local highlights = {}
-    local highlights_info = require("colorful-menu").blink_highlights(ctx)
-    if highlights_info ~= nil then
-        highlights = highlights_info.highlights
-    end
-    ---@diagnostic disable-next-line: undefined-field
-    for _, idx in ipairs(ctx.label_matched_indices) do
-        table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
-    end
-    return highlights
-end
-
----@diagnostic disable-next-line: undefined-doc-name
----@param ctx blink.cmp.DrawItemContext
-function M.blink_highlights(ctx)
-    ---@diagnostic disable-next-line: undefined-field
-    local client = vim.lsp.get_client_by_id(ctx.item.client_id)
-    local highlights = {}
-    if client and not client.is_stopped() then
-        ---@diagnostic disable-next-line: undefined-field
-        local highlights_info = M.highlights(ctx.item, client.name)
-        if highlights_info ~= nil then
-            for _, info in ipairs(highlights_info.highlights or {}) do
-                table.insert(highlights, {
-                    info.range[1],
-                    info.range[2],
-                    ---@diagnostic disable-next-line: undefined-field
-                    group = ctx.deprecated and "BlinkCmpLabelDeprecated" or info[1],
-                })
-            end
-        else
-            return nil
-        end
-        return { label = highlights_info.text, highlights = highlights }
-    end
-    return nil
-end
-
 ---@param item CMHighlights
 ---@return CMHighlights?
 local function apply_post_processing(item)
@@ -152,16 +88,7 @@ end
 ---@param completion_item lsp.CompletionItem
 ---@param ls string?
 ---@return CMHighlights?
-function M.highlights(completion_item, ls)
-    if ls == vim.bo.filetype then
-        vim.notify_once(
-            "colorful-menu.nvim: Integration with nvim-cmp or blink.cmp has been simplified, and legacy per-filetype options is also deprecated"
-                .. " to prefer per-language-server options, please see README",
-            vim.log.levels.WARN
-        )
-        return nil
-    end
-
+local function _highlights(completion_item, ls)
     if completion_item == nil or ls == nil or ls == "" or vim.b.ts_highlight == false then
         return nil
     end
@@ -210,6 +137,85 @@ function M.highlights(completion_item, ls)
     end
 
     return item
+end
+
+---@diagnostic disable-next-line: undefined-doc-name
+---@param entry cmp.Entry
+function M.cmp_highlights(entry)
+    local client = vim.tbl_get(entry, "source", "source", "client") -- For example `lua_ls` etc
+    if client and not client.is_stopped() then
+        ---@diagnostic disable-next-line: undefined-field
+        return _highlights(entry:get_completion_item(), client.name)
+    end
+    return nil
+end
+
+---@diagnostic disable-next-line: undefined-doc-name
+---@param ctx blink.cmp.DrawItemContext
+function M.blink_components_text(ctx)
+    local highlights_info = require("colorful-menu").blink_highlights(ctx)
+    if highlights_info ~= nil then
+        return highlights_info.label
+    else
+        ---@diagnostic disable-next-line: undefined-field
+        return ctx.label
+    end
+end
+
+---@diagnostic disable-next-line: undefined-doc-name
+---@param ctx blink.cmp.DrawItemContext
+function M.blink_components_highlight(ctx)
+    local highlights = {}
+    local highlights_info = require("colorful-menu").blink_highlights(ctx)
+    if highlights_info ~= nil then
+        highlights = highlights_info.highlights
+    end
+    ---@diagnostic disable-next-line: undefined-field
+    for _, idx in ipairs(ctx.label_matched_indices) do
+        table.insert(highlights, { idx, idx + 1, group = "BlinkCmpLabelMatch" })
+    end
+    return highlights
+end
+
+---@diagnostic disable-next-line: undefined-doc-name
+---@param ctx blink.cmp.DrawItemContext
+function M.blink_highlights(ctx)
+    ---@diagnostic disable-next-line: undefined-field
+    local client = vim.lsp.get_client_by_id(ctx.item.client_id)
+    local highlights = {}
+    if client and not client.is_stopped() then
+        ---@diagnostic disable-next-line: undefined-field
+        local highlights_info = _highlights(ctx.item, client.name)
+        if highlights_info ~= nil then
+            for _, info in ipairs(highlights_info.highlights or {}) do
+                table.insert(highlights, {
+                    info.range[1],
+                    info.range[2],
+                    ---@diagnostic disable-next-line: undefined-field
+                    group = ctx.deprecated and "BlinkCmpLabelDeprecated" or info[1],
+                })
+            end
+        else
+            return nil
+        end
+        return { label = highlights_info.text, highlights = highlights }
+    end
+    return nil
+end
+---@param completion_item lsp.CompletionItem
+---@param ls string?
+---@return CMHighlights?
+function M.highlights(completion_item, ls)
+    if ls == vim.bo.filetype then
+        vim.notify_once(
+            "colorful-menu.nvim: Integration with nvim-cmp or blink.cmp has been simplified, and legacy per-filetype options is also deprecated"
+                .. " to prefer per-language-server options, please see README",
+            vim.log.levels.WARN
+        )
+        return nil
+    end
+
+    return _highlights(completion_item, ls)
 end
 
 ---@param opts ColorfulMenuConfig
