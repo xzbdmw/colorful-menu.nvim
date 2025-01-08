@@ -126,8 +126,12 @@ config = function()
                     columns = { { "kind_icon" }, { "label", gap = 1 } },
                     components = {
                         label = {
-                            text = require("colorful-menu").blink_components_text,
-                            highlight = require("colorful-menu").blink_components_highlight,
+                            text = function(ctx)
+                                return require("colorful-menu").blink_components_text(ctx)
+                            end,
+                            highlight = function(ctx)
+                                return require("colorful-menu").blink_components_highlight(ctx)
+                            end,
                         },
                     },
                 },
