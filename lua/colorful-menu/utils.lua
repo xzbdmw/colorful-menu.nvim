@@ -163,6 +163,8 @@ function M.hl_by_kind(kind)
         highlight_name = M.hl_exist_or("@lsp.type.namespace", "@namespace")
     elseif kind == Kind.Class then
         highlight_name = M.hl_exist_or("@lsp.type.class", "@type")
+    elseif kind == Kind.Struct then
+        highlight_name = M.hl_exist_or("@lsp.type.struct", "@type")
     elseif kind == Kind.Constant then
         highlight_name = "@constant"
     else
