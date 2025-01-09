@@ -205,10 +205,13 @@ have the similar effect as blow images.
 
 # gopls
 ## before:
-<img width="814" alt="image" src="https://github.com/user-attachments/assets/30614c61-32d9-4d64-8742-58dd443de6ae" />
+<img width="633" alt="image" src="https://github.com/user-attachments/assets/94ed9b8d-1c81-41b3-b406-2e2340909483" />
+
 
 ## after:
-<img width="857" alt="image" src="https://github.com/user-attachments/assets/91dead66-87d7-4606-8738-a8b45871e63a" />
+<img width="908" alt="image" src="https://github.com/user-attachments/assets/12f98543-8794-4128-9e6c-f3b66606ff75" />
+
+
 
 
 
