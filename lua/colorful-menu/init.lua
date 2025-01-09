@@ -76,38 +76,6 @@ local function apply_post_processing(item)
 end
 
 ---@param completion_item lsp.CompletionItem
----@param ls string
----@return CMHighlights?
-local function default_highlight(completion_item, ls)
-    local label = completion_item.label
-    local highlight_name = require("colorful-menu.utils").hl_by_kind(completion_item.kind)
-    local detail = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
-
-    local highlights = {
-        {
-            highlight_name,
-            range = { 0, #label },
-        },
-    }
-
-    local text = label
-    if detail then
-        local spaces = require("colorful-menu.utils").align_spaces(label, detail)
-        -- If there are any infomation, append it
-        text = label .. spaces .. detail
-        table.insert(highlights, {
-            "@comment",
-            range = { #label + 1, #text },
-        })
-    end
-
-    return {
-        text = text,
-        highlights = highlights,
-    }
-end
-
----@param completion_item lsp.CompletionItem
 ---@param ls string?
 ---@return CMHighlights?
 local function _highlights(completion_item, ls)
@@ -151,7 +119,11 @@ local function _highlights(completion_item, ls)
         if not M.config.ls.fallback then
             return nil
         end
-        item = default_highlight(completion_item, ls)
+        item = require("colorful-menu.languages.default").default_highlight(
+            completion_item,
+            completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail,
+            "@comment"
+        )
     end
 
     if item then
