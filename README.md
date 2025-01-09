@@ -46,6 +46,17 @@ return {
                     arguments_hl = "@comment",
                 },
                 gopls = {
+                    -- By default, we render variable/function's type in the right most side,
+                    -- to make them not to crowd together with the original label.
+
+                    -- when true:
+                    -- foo             *Foo
+                    -- ast         "go/ast"
+
+                    -- when false:
+                    -- foo *Foo
+                    -- ast "go/ast"
+                    align_type_to_right = true,
                     -- When true, label for field and variable will format like "foo: Foo"
                     -- instead of go's original syntax "foo Foo".
                     add_colon_before_type = false,

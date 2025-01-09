@@ -13,7 +13,7 @@ local function parse_signature(signature)
 end
 
 local function align_spaces(abbr, detail)
-    if config.ls.gopls.alignment == false then
+    if config.ls.gopls.align_type_to_right == false then
         return " "
     end
     local blank = config.max_width - vim.fn.strdisplaywidth(abbr) - vim.fn.strdisplaywidth(detail)
@@ -27,7 +27,7 @@ end
 ---@param ls string
 ---@return CMHighlights
 function M.gopls(completion_item, ls)
-    if config.ls.gopls.alignment then
+    if config.ls.gopls.align_type_to_right then
         -- This makes no sense then.
         config.ls.gopls.add_colon_before_type = false
     end
@@ -144,7 +144,7 @@ function M.gopls(completion_item, ls)
 end
 
 function align_spaces(abbr, detail)
-    if config.ls.gopls.alignment == false then
+    if config.ls.gopls.align_type_to_right == false then
         return " "
     end
     local blank = config.max_width - vim.fn.strdisplaywidth(abbr) - vim.fn.strdisplaywidth(detail)

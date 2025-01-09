@@ -21,7 +21,7 @@ M.config = {
             -- When true, label for field and variable will format like "foo: Foo"
             -- instead of go's original syntax "foo Foo".
             add_colon_before_type = false,
-            alignment=false,
+            align_type_to_right = true,
         },
         ts_ls = {
             extra_info_hl = "@comment",
