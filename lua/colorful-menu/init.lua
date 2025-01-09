@@ -59,13 +59,8 @@ local function apply_post_processing(item)
     end
 
     local text = item.text
-    local max_width = M.config.max_width
-
+    local max_width = require("colorful-menu.utils").max_width()
     if max_width and max_width > 0 then
-        -- if text length is beyond max_width, truncate
-        if max_width < 1 and max_width > 0 then
-            max_width = math.floor(max_width * vim.api.nvim_win_get_width(0))
-        end
         local display_width = vim.fn.strdisplaywidth(text)
         if display_width > max_width then
             -- We can remove from the end

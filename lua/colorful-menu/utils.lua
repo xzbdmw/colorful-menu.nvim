@@ -175,11 +175,19 @@ function M.hl_by_kind(kind)
 end
 
 function M.align_spaces(abbr, detail)
-    local blank = config.max_width - vim.fn.strdisplaywidth(abbr) - vim.fn.strdisplaywidth(detail)
+    local blank = M.max_width() - vim.fn.strdisplaywidth(abbr) - vim.fn.strdisplaywidth(detail)
     if blank <= 1 then
         return "  "
     end
     return string.rep(" ", blank)
+end
+
+function M.max_width()
+    local max_width = config.max_width
+    if max_width < 1 and max_width > 0 then
+        max_width = math.floor(max_width * vim.api.nvim_win_get_width(0))
+    end
+    return max_width
 end
 
 return M
