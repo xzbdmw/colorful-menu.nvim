@@ -33,8 +33,33 @@ function M.gopls(completion_item, ls)
     end
 
     local label = completion_item.label
-    local detail = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
     local kind = completion_item.kind
+    local detail = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
+    if detail then
+        -- In unimported one, we remove useless information
+        -- assign.Analyzer var from("golang.org/x/tools/go/analysis/passes/assign")
+        -- =>
+        -- assign.Analyzer "golang.org/x/tools/go/analysis/passes/assign"
+        local path = detail:match(".*%(from(.*)%)")
+        if path then
+            local highlight_name = utils.hl_by_kind(kind)
+            local spaces = align_spaces(label, path)
+            local text = label .. align_spaces(label, path) .. path
+            return {
+                text = text,
+                highlights = {
+                    {
+                        highlight_name,
+                        range = { 0, #label },
+                    },
+                    {
+                        "@string",
+                        range = { #label + #spaces, #text },
+                    },
+                },
+            }
+        end
+    end
 
     if not kind then
         return utils.highlight_range(label, ls, 0, #label)
@@ -93,34 +118,20 @@ function M.gopls(completion_item, ls)
         return utils.adjust_range(item, name_offset, text)
         --
     elseif (kind == Kind.Function or kind == Kind.Method) and detail then
+        local signature = vim.trim(detail)
         if detail:sub(1, 4) == "func" then
-            local signature = detail:sub(5)
-            local text = string.format("%s%s", label, signature)
-
-            if signature ~= "()" then
-                local b, e = string.find(signature, "from")
-                if b == 3 and e == 6 then
-                    text = label .. align_spaces(label, signature) .. signature
-                else
-                    local params, returns = parse_signature(signature)
-                    text = label .. params .. align_spaces(label, params .. returns) .. returns
-                end
-            end
-
-            local source = string.format("func %s {}", text:sub(name_offset))
-            local item = utils.highlight_range(source, ls, 5, 5 + #text:sub(name_offset))
-            return utils.adjust_range(item, name_offset, text)
-        else
-            return {
-                text = label,
-                highlights = {
-                    {
-                        "@function",
-                        range = { 0, #label },
-                    },
-                },
-            }
+            signature = detail:sub(5)
         end
+
+        local text = string.format("%s%s", label, signature)
+        if signature ~= "()" then
+            local params, returns = parse_signature(signature)
+            text = label .. params .. align_spaces(label, params .. returns) .. returns
+        end
+
+        local source = string.format("func %s {}", text:sub(name_offset))
+        local item = utils.highlight_range(source, ls, 5, 5 + #text:sub(name_offset))
+        return utils.adjust_range(item, name_offset, text)
         --
     else
         -- Handle other kinds

@@ -1,3 +1,6 @@
+local Kind = require("colorful-menu").Kind
+local config = require("colorful-menu").config
+
 local M = {}
 
 local query_cache = {}
@@ -142,4 +145,30 @@ function M.hl_exist_or(hl_group, fallback)
     end
 end
 
+function M.hl_by_kind(kind)
+    local highlight_name
+    if kind == Kind.Method then
+        highlight_name = M.hl_exist_or("@lsp.type.method", "@function")
+    elseif kind == Kind.Function then
+        highlight_name = M.hl_exist_or("@lsp.type.function", "@function")
+    elseif kind == Kind.Variable then
+        highlight_name = M.hl_exist_or("@lsp.type.variable", "@variable")
+    elseif kind == Kind.Field then
+        highlight_name = M.hl_exist_or("@lsp.type.field", "@field")
+    elseif kind == Kind.Keyword then
+        highlight_name = "@keyword"
+    elseif kind == Kind.Property then
+        highlight_name = M.hl_exist_or("@lsp.type.property", "@property")
+    elseif kind == Kind.Module then
+        highlight_name = M.hl_exist_or("@lsp.type.namespace", "@namespace")
+    elseif kind == Kind.Class then
+        highlight_name = M.hl_exist_or("@lsp.type.class", "@type")
+    elseif kind == Kind.Constant then
+        highlight_name = "@constant"
+    else
+        highlight_name = config.fallback_highlight
+    end
+
+    return highlight_name
+end
 return M
