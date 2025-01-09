@@ -131,36 +131,34 @@ function M.get_bank(abbr, detail)
 end
 
 function M.utf8len(input)
-    local len  = string.len(input)                   --这里获取到的长度为字节数，如示例长度为：21，而我们肉眼看到的长度应该是15（包含空格）
-    local left = len                                 --将字节长度赋值给将要使用的变量，作为判断退出while循环的字节长度
-    local cnt  = 0                                   --将要返回的字符长度
-    local arr  = { 0, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc } --用来判断是否满足字节长度的列表
-    while left ~= 0 do                               --遍历每一个字符
-        --获取字节的ASCII值，这里的 “-” 代表反向对应的索引，-left：input反着第left
-        --假设字符串字符input长度是：21，left的值是：21，那string.byte(input, -left)就是第一个字节的ASCII值
-        local tmp = string.byte(input, -left) --看上面两行
-        local i   = #arr                      --获取判断列表的长度，同时作为字节长度
-        while arr[i] do                       --循环判定列表
-            if tmp >= arr[i] then             --判定当前 “字符” 的 头“字节” ACSII值符合的范围
-                left = left - i               --字符串字节长度 -i，也就是 减去字节长度
-                break                         --结束判断
+    local len  = string.len(input)
+    local left = len
+    local cnt  = 0
+    local arr  = { 0, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc }
+    while left ~= 0 do
+        local tmp = string.byte(input, -left)
+        local i   = #arr
+        while arr[i] do
+            if tmp >= arr[i] then
+                left = left - i
+                break
             end
-            i = i - 1                         --每次判断失败都说明不符合当前字节长度
+            i = i - 1
         end
-        cnt = cnt + 1                         --“字符” 长度+1
+        cnt = cnt + 1
     end
-    return cnt                                --返回 “字符” 长度
+    return cnt
 end
 
 function M.parseFunctionSignature(signature)
-    -- 匹配参数和返回值的模式
+    -- Pattern to match parameters and return values
     local paramPattern = "^%((.-)%)"
     local returnPattern = "%)(%s*%b())$"
     local mixedPattern = "^%((.-)%)%s*(.*)$"
 
     local params, returns
 
-    -- 尝试匹配参数和返回值都在括号内的情况
+    -- Try to match arguments and return values both within parentheses
     local paramMatch = signature:match(paramPattern)
     local returnMatch = signature:match(returnPattern)
 
@@ -172,7 +170,7 @@ function M.parseFunctionSignature(signature)
         returns = returnMatch
     end
 
-    -- 如果没有匹配到返回值，尝试匹配参数在括号内，返回值在括号外的情况
+    -- If no return value is matched, try to match the case where the parameters are inside the brackets and the return value is outside the brackets
     if not returns then
         local mixedParam, mixedReturn = signature:match(mixedPattern)
         if mixedParam then
