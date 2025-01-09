@@ -83,22 +83,23 @@ local function default_highlight(completion_item, ls)
     local highlight_name = require("colorful-menu.utils").hl_by_kind(completion_item.kind)
     local detail = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
 
-    local text = label
-    if detail then
-        -- If there are any infomation, append it
-        text = label .. " " .. detail
-    end
-
     local highlights = {
         {
             highlight_name,
             range = { 0, #label },
         },
-        {
+    }
+
+    local text = label
+    if detail then
+        local spaces = require("colorful-menu.utils").align_spaces(label, detail)
+        -- If there are any infomation, append it
+        text = label .. spaces .. detail
+        table.insert(highlights, {
             "@comment",
             range = { #label + 1, #text },
-        },
-    }
+        })
+    end
 
     return {
         text = text,

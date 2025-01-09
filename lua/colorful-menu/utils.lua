@@ -171,4 +171,13 @@ function M.hl_by_kind(kind)
 
     return highlight_name
 end
+
+function M.align_spaces(abbr, detail)
+    local blank = config.max_width - vim.fn.strdisplaywidth(abbr) - vim.fn.strdisplaywidth(detail)
+    if blank < 0 then
+        return " "
+    end
+    return string.rep(" ", blank)
+end
+
 return M
