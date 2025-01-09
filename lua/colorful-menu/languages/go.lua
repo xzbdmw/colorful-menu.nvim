@@ -4,10 +4,34 @@ local config = require("colorful-menu").config
 
 local M = {}
 
+local function parse_signature(signature)
+    local params, returns = "", ""
+    local pm, rm = signature:match("^(%b())%s*(%(?.*%)?)")
+    params = pm ~= nil and pm or ""
+    returns = rm ~= nil and rm or ""
+    return params, returns
+end
+
+local function align_spaces(abbr, detail)
+    if config.ls.gopls.alignment == false then
+        return " "
+    end
+    local blank = config.max_width - vim.fn.strdisplaywidth(abbr) - vim.fn.strdisplaywidth(detail)
+    if blank < 0 then
+        blank = 0
+    end
+    return string.rep(" ", blank)
+end
+
 ---@param completion_item lsp.CompletionItem
 ---@param ls string
 ---@return CMHighlights
 function M.gopls(completion_item, ls)
+    if config.ls.gopls.alignment then
+        -- This makes no sense then.
+        config.ls.gopls.add_colon_before_type = false
+    end
+
     local label = completion_item.label
     local detail = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
     local kind = completion_item.kind
@@ -27,16 +51,16 @@ function M.gopls(completion_item, ls)
     end
 
     if kind == Kind.Module and detail then
-        local text = string.format("%s%s%s", label, M.get_bank(label, detail), detail)
+        local text = string.format("%s%s%s", label, align_spaces(label, detail), detail)
         local source = string.format("import %s", text)
         return utils.highlight_range(source, ls, 7, 7 + #text)
         --
     elseif (kind == Kind.Constant or kind == Kind.Variable) and detail then
         local text
         if config.ls.gopls.add_colon_before_type then
-            text = string.format("%s:%s%s", label, M.get_bank(label, detail), detail)
+            text = string.format("%s:%s%s", label, align_spaces(label, detail), detail)
         else
-            text = string.format("%s%s%s", label, M.get_bank(label, detail), detail)
+            text = string.format("%s%s%s", label, align_spaces(label, detail), detail)
         end
         local var_part = text:sub(name_offset)
         local source = string.format("var %s", var_part)
@@ -44,15 +68,15 @@ function M.gopls(completion_item, ls)
         return utils.adjust_range(item, name_offset, text)
         --
     elseif kind == Kind.Struct then
-        detail = " struct{}"
-        local text = string.format("%s%s%s", label, M.get_bank(label, detail), detail)
+        detail = "struct{}"
+        local text = string.format("%s%s%s", label, align_spaces(label, detail), detail)
         local source = string.format("type %s struct {}", text:sub(name_offset))
         local item = utils.highlight_range(source, ls, 5, 5 + #text:sub(name_offset))
         return utils.adjust_range(item, name_offset, text)
         --
     elseif kind == Kind.Interface then
         detail = "interface{}"
-        local text = string.format("%s%s%s", label, M.get_bank(label, detail), detail)
+        local text = string.format("%s%s%s", label, align_spaces(label, detail), detail)
         local source = string.format("type %s interface {}", text:sub(name_offset))
         local item = utils.highlight_range(source, ls, 5, 5 + #text:sub(name_offset))
         return utils.adjust_range(item, name_offset, text)
@@ -60,9 +84,9 @@ function M.gopls(completion_item, ls)
     elseif kind == Kind.Field and detail then
         local text
         if config.ls.gopls.add_colon_before_type then
-            text = string.format("%s:%s%s", label, M.get_bank(label, detail), detail)
+            text = string.format("%s:%s%s", label, align_spaces(label, detail), detail)
         else
-            text = string.format("%s%s%s", label, M.get_bank(label, detail), detail)
+            text = string.format("%s%s%s", label, align_spaces(label, detail), detail)
         end
         local source = string.format("type T struct { %s }", text:sub(name_offset))
         local item = utils.highlight_range(source, ls, 16, 16 + #text:sub(name_offset))
@@ -76,10 +100,10 @@ function M.gopls(completion_item, ls)
             if signature ~= "()" then
                 local b, e = string.find(signature, "from")
                 if b == 3 and e == 6 then
-                    text = label .. M.get_bank(label, signature) .. signature
+                    text = label .. align_spaces(label, signature) .. signature
                 else
-                    local params, returns = M.parseFunctionSignature(signature)
-                    text = label .. params .. M.get_bank(label, signature) .. returns
+                    local params, returns = parse_signature(signature)
+                    text = label .. params .. align_spaces(label, params .. returns) .. returns
                 end
             end
 
@@ -119,77 +143,15 @@ function M.gopls(completion_item, ls)
     return {}
 end
 
-function M.get_bank(abbr, detail)
+function align_spaces(abbr, detail)
     if config.ls.gopls.alignment == false then
         return " "
     end
-    local bank = config.max_width - M.utf8len(abbr) - M.utf8len(detail)
-    if bank < 0 then
-        bank = 0
+    local blank = config.max_width - vim.fn.strdisplaywidth(abbr) - vim.fn.strdisplaywidth(detail)
+    if blank < 0 then
+        blank = 0
     end
-    return string.format("%" .. bank .. "s", "")
-end
-
-function M.utf8len(input)
-    local len  = string.len(input)
-    local left = len
-    local cnt  = 0
-    local arr  = { 0, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc }
-    while left ~= 0 do
-        local tmp = string.byte(input, -left)
-        local i   = #arr
-        while arr[i] do
-            if tmp >= arr[i] then
-                left = left - i
-                break
-            end
-            i = i - 1
-        end
-        cnt = cnt + 1
-    end
-    return cnt
-end
-
-function M.parseFunctionSignature(signature)
-    -- Pattern to match parameters and return values
-    local paramPattern = "^%((.-)%)"
-    local returnPattern = "%)(%s*%b())$"
-    local mixedPattern = "^%((.-)%)%s*(.*)$"
-
-    local params, returns
-
-    -- Try to match arguments and return values both within parentheses
-    local paramMatch = signature:match(paramPattern)
-    local returnMatch = signature:match(returnPattern)
-
-    if paramMatch then
-        params = "(" .. paramMatch .. ")"
-    end
-
-    if returnMatch then
-        returns = returnMatch
-    end
-
-    -- If no return value is matched, try to match the case where the parameters are inside the brackets and the return value is outside the brackets
-    if not returns then
-        local mixedParam, mixedReturn = signature:match(mixedPattern)
-        if mixedParam then
-            params = "(" .. mixedParam .. ")"
-        end
-        if mixedReturn then
-            returns = mixedReturn
-        end
-    end
-
-    if params == nil then
-        params = "()"
-    end
-
-    if returns == nil then
-        returns = ""
-    end
-
-    return params, returns
+    return string.rep(" ", blank)
 end
 
 return M
