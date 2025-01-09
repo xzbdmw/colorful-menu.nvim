@@ -86,6 +86,16 @@ function M.gopls(completion_item, ls)
             local source = string.format("func %s {}", text:sub(name_offset))
             local item = utils.highlight_range(source, ls, 5, 5 + #text:sub(name_offset))
             return utils.adjust_range(item, name_offset, text)
+        else
+            return {
+                text = label,
+                highlights = {
+                    {
+                        "@function",
+                        range = { 0, #label },
+                    },
+                },
+            }
         end
         --
     else

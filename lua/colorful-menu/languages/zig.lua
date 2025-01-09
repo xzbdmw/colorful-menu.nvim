@@ -40,6 +40,16 @@ function M.zls(completion_item, ls)
             local source = string.format("fn %s {}", text)
             local item = utils.highlight_range(source, ls, 3, 3 + #text)
             return item
+        else
+            return {
+                text = completion_item.label,
+                highlights = {
+                    {
+                        "@function",
+                        range = { 0, #completion_item.label },
+                    },
+                },
+            }
         end
         --
     else
