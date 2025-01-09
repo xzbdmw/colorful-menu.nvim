@@ -25,8 +25,7 @@ Has built-in supports for
 - [**roslyn (C#)**](#roslyn), 
 - [**basedpyright (Python)**](#basedpyright),
 
-For any other language, default to directly
-apply treesitter highlight to label (feel free to open feature request for more languages).
+For any other language, default to use highlight group of item's kind (feel free to open feature request for more languages).
 
 Currently supports **nvim-cmp** and **blink.cmp**.
 

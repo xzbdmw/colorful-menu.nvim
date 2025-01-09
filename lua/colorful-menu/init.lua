@@ -80,10 +80,30 @@ end
 ---@return CMHighlights?
 local function default_highlight(completion_item, ls)
     local label = completion_item.label
-    if label == nil then
-        return nil
+    local highlight_name = require("colorful-menu.utils").hl_by_kind(completion_item.kind)
+    local detail = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
+
+    local text = label
+    if detail then
+        -- If there are any infomation, append it
+        text = label .. " " .. detail
     end
-    return require("colorful-menu.utils").highlight_range(label, ls, 0, #label)
+
+    local highlights = {
+        {
+            highlight_name,
+            range = { 0, #label },
+        },
+        {
+            "@comment",
+            range = { #label + 1, #text },
+        },
+    }
+
+    return {
+        text = text,
+        highlights = highlights,
+    }
 end
 
 ---@param completion_item lsp.CompletionItem
@@ -203,6 +223,7 @@ function M.blink_highlights(ctx)
     end
     return nil
 end
+
 ---@param completion_item lsp.CompletionItem
 ---@param ls string?
 ---@return CMHighlights?
