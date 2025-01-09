@@ -40,6 +40,7 @@ M.config = {
         roslyn = {
             extra_info_hl = "@comment",
         },
+        -- The same applies to pyright/pylance
         basedpyright = {
             extra_info_hl = "@comment",
         },
@@ -111,8 +112,8 @@ local function _highlights(completion_item, ls)
     elseif ls == "roslyn" then
         item = require("colorful-menu.languages.cs").roslyn(completion_item, ls)
         --
-    elseif ls == "basedpyright" then
-        item = require("colorful-menu.languages.python").basedpyright(completion_item, ls)
+    elseif ls == "basedpyright" or ls == "pyright" or ls == "pylance" then
+        item = require("colorful-menu.languages.python").basedpyright(completion_item, "basedpyright")
         --
     else
         -- No languages detected so check if we should highlight with default or not

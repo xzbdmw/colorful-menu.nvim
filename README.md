@@ -23,7 +23,7 @@ Has built-in supports for
 - [**intelephense (PHP)**](#intelephense), 
 - [**zls (Zig)**](#zls), 
 - [**roslyn (C#)**](#roslyn), 
-- [**basedpyright (Python)**](#basedpyright),
+- [**basedpyright/pylance/pyright (Python)**](#basedpyright),
 
 For any other language, default to use highlight group of item's kind (feel free to open feature request for more languages).
 
@@ -78,6 +78,7 @@ return {
                 roslyn = {
                     extra_info_hl = "@comment",
                 },
+                -- The same applies to pyright/pylance
                 basedpyright = {
                     -- It is usually import path such as "os"
                     extra_info_hl = "@comment",
@@ -129,10 +130,6 @@ config = function()
                 draw = {
                     -- We don't need label_description now because label and label_description are already
                     -- conbined together in label by colorful-menu.nvim.
-                    --
-                    -- However, for `basedpyright`, it is recommend to set
-                    -- columns = { { "kind_icon" }, { "label", "label_description", gap = 1 } },
-                    -- because the `label_description` will only be import path.
                     columns = { { "kind_icon" }, { "label", gap = 1 } },
                     components = {
                         label = {
