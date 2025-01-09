@@ -16,11 +16,7 @@ local function align_spaces(abbr, detail)
     if config.ls.gopls.align_type_to_right == false then
         return " "
     end
-    local blank = config.max_width - vim.fn.strdisplaywidth(abbr) - vim.fn.strdisplaywidth(detail)
-    if blank < 0 then
-        blank = 0
-    end
-    return string.rep(" ", blank)
+    return utils.align_spaces(abbr, detail)
 end
 
 ---@param completion_item lsp.CompletionItem
@@ -152,17 +148,6 @@ function M.gopls(completion_item, ls)
         }
     end
     return {}
-end
-
-function align_spaces(abbr, detail)
-    if config.ls.gopls.align_type_to_right == false then
-        return " "
-    end
-    local blank = config.max_width - vim.fn.strdisplaywidth(abbr) - vim.fn.strdisplaywidth(detail)
-    if blank < 0 then
-        blank = 0
-    end
-    return string.rep(" ", blank)
 end
 
 return M

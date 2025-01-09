@@ -176,8 +176,8 @@ end
 
 function M.align_spaces(abbr, detail)
     local blank = config.max_width - vim.fn.strdisplaywidth(abbr) - vim.fn.strdisplaywidth(detail)
-    if blank < 0 then
-        return " "
+    if blank <= 1 then
+        return "  "
     end
     return string.rep(" ", blank)
 end
