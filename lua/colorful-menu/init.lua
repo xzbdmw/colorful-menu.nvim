@@ -67,6 +67,16 @@ local function apply_post_processing(item)
             -- or do partial truncation using `strcharpart` or `strdisplaywidth` logic.
             local truncated = vim.fn.strcharpart(text, 0, max_width - 1) .. "…"
             item.text = truncated
+            local truncated_width = vim.fn.strdisplaywidth(truncated)
+            for i = #item.highlights, 1, -1 do
+                local hl = item.highlights[i]
+                local range = hl.range
+                if range[1] > truncated_width + 3 then
+                    table.remove(item.highlights, i)
+                elseif range[2] > truncated_width + 3 then
+                    range[2] = truncated_width + 3
+                end
+            end
         end
     end
 end
