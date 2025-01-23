@@ -5,27 +5,22 @@
   <img width="566" alt="image" src="https://github.com/user-attachments/assets/0b129a4a-19c6-4840-b672-2c8b58994724" />
 </p>
 
-Out of box, this plugin reconsturct completion_item and applies Treesitter highlight queries to 
-produce richly colorized completion items with variable-size highlight ranges, somehow similar
-to lspkind.nvim.
+Out of box, this plugin reconstructs completion item and applies treesitter highlight queries to
+produce richly colorized completion items with variable-size highlight ranges.
 
-**beta state**.
+Has built-in support for
+- [**rust-analyzer (Rust)**](#rust-analyzer)
+- [**gopls (Go)**](#gopls)
+- [**typescript-language-server/vtsls (TypeScript)**](#typescript-language-server)
+- [**lua-ls (Lua)**](#lua_ls)
+- [**clangd (C/CPP)**](#clangd)
+- [**intelephense (PHP)**](#intelephense)
+- [**zls (Zig)**](#zls)
+- [**roslyn (C#)**](#roslyn)
+- [**basedpyright/pylance/pyright (Python)**](#basedpyright)
 
-run `nvim  -u ~/.config/nvim/repro.lua ~/.config/nvim/repro.lua` as a minimal reproduce template
-see [repro.lua](https://github.com/xzbdmw/colorful-menu.nvim/blob/master/repro.lua)
-
-Has built-in supports for 
-- [**rust-analyzer (rust)**](#rust-analyzer), 
-- [**gopls (go)**](#gopls), 
-- [**typescript-language-server/vtsls (TypeScript)**](#typescript-language-server), 
-- [**lua-ls (Lua)**](#lua_ls), 
-- [**clangd (C/CPP)**](#clangd), 
-- [**intelephense (PHP)**](#intelephense), 
-- [**zls (Zig)**](#zls), 
-- [**roslyn (C#)**](#roslyn), 
-- [**basedpyright/pylance/pyright (Python)**](#basedpyright),
-
-For any other language, default to use highlight group of item's kind (feel free to open feature request for more languages).
+For other languages, it defaults to use highlight group of item's kind.
+(feel free to open feature request for more languages)
 
 Currently supports **nvim-cmp** and **blink.cmp**.
 
@@ -102,15 +97,16 @@ return {
 }
 ```
 
-## call it in cmp:
+## use it in nvim-cmp:
 
 ```lua
 formatting = {
     format = function(entry, vim_item)
         local highlights_info = require("colorful-menu").cmp_highlights(entry)
 
-        -- if highlight_info==nil, which means missing ts parser, let's fallback to use default `vim_item.abbr`.
-        -- What this plugin offers is two fields: `vim_item.abbr_hl_group` and `vim_item.abbr`.
+        -- highlight_info is nil means we are missing the ts parser, it's
+        -- better to fallback to use default `vim_item.abbr`. What this plugin
+        -- offers is two fields: `vim_item.abbr_hl_group` and `vim_item.abbr`.
         if highlights_info ~= nil then
             vim_item.abbr_hl_group = highlights_info.highlights
             vim_item.abbr = highlights_info.text
@@ -120,7 +116,7 @@ formatting = {
     end,
 }
 ```
-## Or call it on blink.cmp
+## use it in blink.cmp:
 
 ```lua
 config = function()
@@ -129,7 +125,7 @@ config = function()
             menu = {
                 draw = {
                     -- We don't need label_description now because label and label_description are already
-                    -- conbined together in label by colorful-menu.nvim.
+                    -- combined together in label by colorful-menu.nvim.
                     columns = { { "kind_icon" }, { "label", gap = 1 } },
                     components = {
                         label = {
@@ -159,7 +155,7 @@ config = function()
             menu = {
                 draw = {
                     -- We don't need label_description now because label and label_description are already
-                    -- conbined together in label by colorful-menu.nvim.
+                    -- combined together in label by colorful-menu.nvim.
                     columns = { { "kind_icon" }, { "label", gap = 1 } },
                     components = {
                         label = {
@@ -197,8 +193,7 @@ end
 
 ## Screen
 
-Note: you may want to set CmpItemAbbrMatch or BlinkCmpLabelMatch to only has bold style (without fg) to
-have the similar effect as blow images.
+> **💡 Note:** You may want to set `CmpItemAbbrMatch` or `BlinkCmpLabelMatch` to only have **bold style** (without `fg`) to achieve a similar effect as the images below.
 
 # gopls
 ## before:
@@ -280,7 +275,7 @@ Thanks to [@pnx](https://github.com/pnx)
 ## after:
 <img width="737" alt="image" src="https://github.com/user-attachments/assets/cf62ca84-a53f-41f2-bbcd-da724b6418c6" />
 
-# roslyn 
+# roslyn
 Thanks to [@seblj](https://github.com/seblj)
 ## before:
 ![image](https://github.com/user-attachments/assets/1b309b78-e75d-404d-ab23-e19f7b8f0e4e)
@@ -299,11 +294,11 @@ Thanks to [@seblj](https://github.com/seblj)
 
 ## Contributing
 
-Feel free to open issues or submit pull requests if you encounter any bugs or have feature requests.  
+Feel free to open issues or submit pull requests if you encounter any bugs or have feature requests.
 
 ## License
 
-MIT License.  
+MIT License.
 
 ## Credit
 [Zed](https://github.com/zed-industries/zed) for the initial idea of colorize.
