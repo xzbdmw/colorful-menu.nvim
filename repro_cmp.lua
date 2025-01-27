@@ -46,19 +46,16 @@ local plugins = {
                 completion = {
                     completeopt = "menu,menuone,noinsert",
                 },
-
-                format = function(entry, vim_item)
-                    local highlights_info = require("colorful-menu").cmp_highlights(entry)
-
-                    -- if highlight_info==nil, which means missing ts parser, let's fallback to use default `vim_item.abbr`.
-                    -- What this plugin offers is two fields: `vim_item.abbr_hl_group` and `vim_item.abbr`.
-                    if highlights_info ~= nil then
-                        vim_item.abbr_hl_group = highlights_info.highlights
-                        vim_item.abbr = highlights_info.text
-                    end
-
-                    return vim_item
-                end,
+                formatting = {
+                    format = function(entry, vim_item)
+                        local highlights_info = require("colorful-menu").cmp_highlights(entry)
+                        if highlights_info ~= nil then
+                            vim_item.abbr_hl_group = highlights_info.highlights
+                            vim_item.abbr = highlights_info.text
+                        end
+                        return vim_item
+                    end,
+                },
                 sources = require("cmp").config.sources({
                     { name = "nvim_lsp" },
                 }, {}),
