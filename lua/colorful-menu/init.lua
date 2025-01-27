@@ -37,6 +37,7 @@ M.config = {
         clangd = {
             -- Such as "From <stdio.h>".
             extra_info_hl = "@comment",
+            align_type_to_right = true,
         },
         roslyn = {
             extra_info_hl = "@comment",

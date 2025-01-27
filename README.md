@@ -71,6 +71,8 @@ return {
                 clangd = {
                     -- Such as "From <stdio.h>".
                     extra_info_hl = "@comment",
+                    -- Similar to the same setting of gopls.
+                    align_type_to_right = true,
                 },
                 roslyn = {
                     extra_info_hl = "@comment",
