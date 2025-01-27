@@ -5,6 +5,13 @@ local config = require("colorful-menu").config
 
 local M = {}
 
+local function align_spaces(abbr, detail)
+    if config.ls["rust-analyzer"].align_type_to_right == false then
+        return " "
+    end
+    return utils.align_spaces(abbr, detail)
+end
+
 ---@param completion_item lsp.CompletionItem
 ---@param ls string
 ---@return CMHighlights
@@ -20,9 +27,14 @@ local function _rust_analyzer(completion_item, ls)
 
     if kind == Kind.Field and detail then
         local name = completion_item.label
-        local text = string.format("%s: %s", name, detail)
+        local text = string.format("%s:%s%s", name, align_spaces(name .. " ", detail), detail)
         local source = string.format("struct S { %s }", text)
-        return utils.highlight_range(source, ls, 11, 11 + #text)
+        local hl = utils.highlight_range(source, ls, 11, 11 + #text)
+        if config.ls["rust-analyzer"].align_type_to_right == false then
+            return hl
+        end
+        hl.text = hl.text:sub(1, #name) .. " " .. hl.text:sub(#name + 2, #text)
+        return hl
         --
     elseif
         (kind == Kind.Constant or kind == Kind.Variable)
@@ -30,9 +42,19 @@ local function _rust_analyzer(completion_item, ls)
         and completion_item.insertTextFormat ~= insertTextFormat.Snippet
     then
         local name = completion_item.label
-        local text = string.format("%s: %s", name, completion_item.detail or detail)
+        local text = string.format(
+            "%s:%s%s",
+            name,
+            align_spaces(name .. " ", completion_item.detail),
+            completion_item.detail or detail
+        )
         local source = string.format("let %s = ();", text)
-        return utils.highlight_range(source, ls, 4, 4 + #text)
+        local hl = utils.highlight_range(source, ls, 4, 4 + #text)
+        if config.ls["rust-analyzer"].align_type_to_right == false then
+            return hl
+        end
+        hl.text = hl.text:sub(1, #name) .. " " .. hl.text:sub(#name + 2, #text)
+        return hl
         --
     elseif (kind == Kind.EnumMember) and detail then
         return utils.highlight_range(detail, ls, 0, #detail)
@@ -102,8 +124,9 @@ local function _rust_analyzer(completion_item, ls)
         if detail then
             detail = vim.trim(detail)
             if vim.startswith(detail, "(") then
+                local space = align_spaces(completion_item.label, detail)
                 return {
-                    text = completion_item.label .. " " .. detail,
+                    text = completion_item.label .. space .. detail,
                     highlights = {
                         {
                             highlight_name,
@@ -111,7 +134,7 @@ local function _rust_analyzer(completion_item, ls)
                         },
                         {
                             config.ls["rust-analyzer"].extra_info_hl,
-                            range = { #completion_item.label + 1, #completion_item.label + 2 + #detail },
+                            range = { #completion_item.label + #space, #completion_item.label + #space + #detail },
                         },
                     },
                 }

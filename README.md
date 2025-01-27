@@ -65,6 +65,8 @@ return {
                 ["rust-analyzer"] = {
                     -- Such as (as Iterator), (use std::io).
                     extra_info_hl = "@comment",
+                    -- Similar to the same setting of gopls.
+                    align_type_to_right = true,
                 },
                 clangd = {
                     -- Such as "From <stdio.h>".
