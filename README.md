@@ -2,7 +2,7 @@
 
 ## colorful-menu.nvim
 <p align="center">
-  <img width="566" alt="image" src="https://github.com/user-attachments/assets/0b129a4a-19c6-4840-b672-2c8b58994724" />
+<img width="749" alt="image" src="https://github.com/user-attachments/assets/9fcb9725-5385-4ce3-afe5-74c0e57d9893" />
 </p>
 
 Out of box, this plugin reconstructs completion item and applies treesitter highlight queries to
@@ -219,12 +219,7 @@ https://github.com/user-attachments/assets/fe72a70b-28ec-460f-9b77-12c95bf74e2e
 <img width="669" alt="image" src="https://github.com/user-attachments/assets/1c053055-48c7-4b2f-b228-daa77f740eef" />
 
 ## after:
-<img width="722" alt="image" src="https://github.com/user-attachments/assets/d196db15-163a-496f-a8d4-dc1798b59543" />
-
-<details>
-  <summary>Click to see video</summary>
-https://github.com/user-attachments/assets/94cb79f0-b93f-4749-99b7-15eae3764f0f
-</details>
+<img width="754" alt="image" src="https://github.com/user-attachments/assets/eb51b940-173a-4a31-bddc-d55790ec68cf" />
 
 # clangd
 ## before：
