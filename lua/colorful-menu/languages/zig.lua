@@ -38,8 +38,9 @@ function M.zls(completion_item, ls)
             local signature = detail:sub(4)
             local text = string.format("%s%s", label, signature)
             local source = string.format("fn %s {}", text)
-            local item = utils.highlight_range(source, ls, 3, 3 + #text)
-            return item
+            return utils.highlight_range(source, ls, 3, 3 + #text)
+        elseif detail:sub(1, 1) == "@" then
+            return utils.highlight_range(detail, ls, 0, #detail)
         else
             return {
                 text = completion_item.label,
