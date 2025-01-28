@@ -230,7 +230,8 @@ https://github.com/user-attachments/assets/fe72a70b-28ec-460f-9b77-12c95bf74e2e
 <img width="605" alt="image" src="https://github.com/user-attachments/assets/be41f824-1ba3-48e8-baad-274efb298a92" />
 
 ## after:
-<img width="840" alt="image" src="https://github.com/user-attachments/assets/43959f9a-7355-4695-9566-231f7627b6c6" />
+<img width="732" alt="image" src="https://github.com/user-attachments/assets/64a4b300-2aca-494d-ab9e-140265640f9d" />
+
 
 <details>
   <summary>Click to see video</summary>
