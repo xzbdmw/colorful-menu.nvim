@@ -4,9 +4,6 @@ local config = require("colorful-menu").config
 local M = {}
 
 local query_cache = {}
-local parser_cache = {}
-local parser_cache_size = 0
-local MAX_PARSER_CACHE_SIZE = 10000
 
 ---@param str string
 ---@param ls string
@@ -30,20 +27,10 @@ local function compute_highlights(str, ls)
         query = query_cache[ls]
     end
 
-    local parser
-    if parser_cache[str .. "!!" .. ls] == nil then
-        ok, parser = pcall(vim.treesitter.get_string_parser, str, lang)
-        if not ok then
-            return {}
-        end
-        parser_cache_size = parser_cache_size + 1
-        if parser_cache_size > MAX_PARSER_CACHE_SIZE then
-            parser_cache_size = 0
-            parser_cache = {}
-        end
-        parser_cache[str .. "!!" .. ls] = parser
-    else
-        parser = parser_cache[str .. "!!" .. ls]
+    ---@diagnostic disable-next-line: redefined-local
+    local ok, parser = pcall(vim.treesitter.get_string_parser, str, lang)
+    if not ok then
+        return {}
     end
 
     if not parser then
