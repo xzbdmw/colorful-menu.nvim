@@ -276,10 +276,10 @@ Thanks to [@pnx](https://github.com/pnx)
 
 # zls
 ## before:
-<img width="718" alt="image" src="https://github.com/user-attachments/assets/8ef10e59-cb14-4eb7-8f63-f2db1f337c59" />
+<img width="516" alt="image" src="https://github.com/user-attachments/assets/83dbc705-60a7-4406-b1da-7419ab43e23d" />
 
 ## after:
-<img width="737" alt="image" src="https://github.com/user-attachments/assets/cf62ca84-a53f-41f2-bbcd-da724b6418c6" />
+<img width="765" alt="image" src="https://github.com/user-attachments/assets/d518564f-6ac6-4003-85d4-ebb93d56643d" />
 
 # roslyn
 Thanks to [@seblj](https://github.com/seblj)
