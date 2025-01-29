@@ -236,12 +236,6 @@ https://github.com/user-attachments/assets/fe72a70b-28ec-460f-9b77-12c95bf74e2e
 ## after:
 <img width="732" alt="image" src="https://github.com/user-attachments/assets/64a4b300-2aca-494d-ab9e-140265640f9d" />
 
-
-<details>
-  <summary>Click to see video</summary>
-https://github.com/user-attachments/assets/725ea273-b598-4947-b189-f642fa51cf9b
-</details>
-
 # lua_ls
 ## before:
 <img width="608" alt="image" src="https://github.com/user-attachments/assets/f8610a41-af17-458e-852d-f86c90e9860d" />
@@ -249,21 +243,12 @@ https://github.com/user-attachments/assets/725ea273-b598-4947-b189-f642fa51cf9b
 ## after:
 <img width="688" alt="image" src="https://github.com/user-attachments/assets/08e20d76-d57e-4953-92e2-87de8e862a04" />
 
-<details>
-  <summary>Click to see video</summary>
-https://github.com/user-attachments/assets/725ea273-b598-4947-b189-f642fa51cf9b)](https://github.com/user-attachments/assets/1e5b1587-4374-49c3-88e7-1e8ed37b3210
-</details>
-
 # typescript-language-server
 ## before:
 <img width="383" alt="image" src="https://github.com/user-attachments/assets/a787d034-6b33-4ecb-8512-bfb8e2dfa7b3" />
 
 ## after:
 <img width="914" alt="image" src="https://github.com/user-attachments/assets/ae62c90f-ef34-4ca5-9dc5-408dbd1313bd" />
-<details>
-  <summary>Click to see video</summary>
-https://github.com/user-attachments/assets/07509e0c-8c7a-4895-8096-73343f85c583
-</details>
 
 # intelephense
 Thanks to [@pnx](https://github.com/pnx)
@@ -273,13 +258,12 @@ Thanks to [@pnx](https://github.com/pnx)
 ## after:
 ![image](https://github.com/user-attachments/assets/4dc7e943-3552-4a75-933d-10bf553d258c)
 
-
 # zls
 ## before:
 <img width="516" alt="image" src="https://github.com/user-attachments/assets/83dbc705-60a7-4406-b1da-7419ab43e23d" />
 
 ## after:
-<img width="765" alt="image" src="https://github.com/user-attachments/assets/d518564f-6ac6-4003-85d4-ebb93d56643d" />
+<img width="761" alt="image" src="https://github.com/user-attachments/assets/440315e4-8ce6-4ba1-bfff-25997820ce1d" />
 
 # roslyn
 Thanks to [@seblj](https://github.com/seblj)
@@ -295,7 +279,6 @@ Thanks to [@seblj](https://github.com/seblj)
 
 ## after:
 <img width="825" alt="image" src="https://github.com/user-attachments/assets/4e19119d-a064-41da-b987-0a8ef9d0faad" />
-
 
 
 ## Contributing
