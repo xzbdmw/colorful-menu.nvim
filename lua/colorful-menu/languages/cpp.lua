@@ -94,7 +94,7 @@ local function _clangd(completion_item, ls)
                 highlights = {
                     {
                         highlight_name,
-                        range = { 0, end_index },
+                        range = { vim.startswith(label, "•") and 3 or 0, end_index },
                     },
                 },
             }
@@ -114,6 +114,12 @@ function M.clangd(completion_item, ls)
     local vim_item = _clangd(completion_item, ls)
     local max_width = require("colorful-menu.utils").max_width()
     if vim_item.text ~= nil then
+        if vim.startswith(vim_item.text, "•") then
+            table.insert(vim_item.highlights, 1, {
+                config.ls.clangd.import_dot_hl,
+                range = { 0, 3 },
+            })
+        end
         vim_item.text = vim_item.text:gsub(";", " ")
         -- If it is already overflow, just return.
         if max_width and max_width > 0 then

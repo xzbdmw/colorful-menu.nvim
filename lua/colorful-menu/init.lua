@@ -38,8 +38,10 @@ M.config = {
             align_type_to_right = true,
         },
         clangd = {
-            -- Such as "From <stdio.h>".
+            -- Such as "<stdio.h>".
             extra_info_hl = "@comment",
+            -- the hl of leading dot of "•std::filesystem::permissions(..)"
+            import_dot_hl = "@comment",
             align_type_to_right = true,
         },
         roslyn = {

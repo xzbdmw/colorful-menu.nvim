@@ -52,7 +52,8 @@ return {
                     -- ast "go/ast"
                     align_type_to_right = true,
                     -- When true, label for field and variable will format like "foo: Foo"
-                    -- instead of go's original syntax "foo Foo".
+                    -- instead of go's original syntax "foo Foo". If align_type_to_right is
+					-- true, this option has no effect.
                     add_colon_before_type = false,
                 },
                 -- for lsp_config or typescript-tools
@@ -73,6 +74,8 @@ return {
                     extra_info_hl = "@comment",
                     -- Similar to the same setting of gopls.
                     align_type_to_right = true,
+                    -- the hl group of leading dot of "•std::filesystem::permissions(..)"
+                    import_dot_hl = "@comment",
                 },
                 zls = {
                     -- Similar to the same setting of gopls.
