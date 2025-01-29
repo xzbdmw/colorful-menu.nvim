@@ -29,6 +29,9 @@ M.config = {
         vtsls = {
             extra_info_hl = "@comment",
         },
+        zls = {
+            align_type_to_right = true,
+        },
         ["rust-analyzer"] = {
             -- Such as (as Iterator), (use std::io).
             extra_info_hl = "@comment",

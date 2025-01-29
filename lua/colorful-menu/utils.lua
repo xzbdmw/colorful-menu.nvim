@@ -116,8 +116,9 @@ end
 ---@param item CMHighlights
 ---@param name_offset integer
 ---@param label string
+---@param fallback_hl string?
 ---@return CMHighlights
-function M.adjust_range(item, name_offset, label)
+function M.adjust_range(item, name_offset, label, fallback_hl)
     if name_offset == 0 then
         return item
     end
@@ -128,7 +129,7 @@ function M.adjust_range(item, name_offset, label)
     end
     item.text = label:sub(1, name_offset) .. item.text
     table.insert(item.highlights, {
-        "@variable",
+        fallback_hl or "@variable",
         range = { 0, name_offset },
     })
     return item
@@ -138,7 +139,7 @@ end
 ---@param fallback string
 function M.hl_exist_or(hl_group, fallback)
     local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = hl_group })
-    if ok and hl ~= nil then
+    if ok and hl ~= nil and not vim.tbl_isempty(hl) then
         return hl_group
     else
         return fallback
