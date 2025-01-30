@@ -212,32 +212,22 @@ end
 ## before:
 <img width="633" alt="image" src="https://github.com/user-attachments/assets/94ed9b8d-1c81-41b3-b406-2e2340909483" />
 
-
 ## after:
 <img width="908" alt="image" src="https://github.com/user-attachments/assets/12f98543-8794-4128-9e6c-f3b66606ff75" />
-
-
-
-
-
-<details>
-  <summary>Click to see video</summary>
-https://github.com/user-attachments/assets/fe72a70b-28ec-460f-9b77-12c95bf74e2e
-</details>
 
 # rust-analyzer
 ## before:
 <img width="669" alt="image" src="https://github.com/user-attachments/assets/1c053055-48c7-4b2f-b228-daa77f740eef" />
 
 ## after:
-<img width="754" alt="image" src="https://github.com/user-attachments/assets/eb51b940-173a-4a31-bddc-d55790ec68cf" />
+<img width="732" alt="image" src="https://github.com/user-attachments/assets/d98744e2-a6e3-4eef-9241-f76199816a8d" />
 
 # clangd
 ## before：
 <img width="605" alt="image" src="https://github.com/user-attachments/assets/be41f824-1ba3-48e8-baad-274efb298a92" />
 
 ## after:
-<img width="732" alt="image" src="https://github.com/user-attachments/assets/64a4b300-2aca-494d-ab9e-140265640f9d" />
+<img width="708" alt="image" src="https://github.com/user-attachments/assets/f1700593-bc66-487a-bfef-2fc31d8d810c" />
 
 # lua_ls
 ## before:
@@ -297,3 +287,4 @@ MIT License.
 
 @David van Munster for the [pr](https://github.com/hrsh7th/nvim-cmp/pull/1972) which make this plugin possible.
 
+JetBrains for its right-aligned type layout
