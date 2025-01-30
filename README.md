@@ -227,7 +227,7 @@ end
 <img width="605" alt="image" src="https://github.com/user-attachments/assets/be41f824-1ba3-48e8-baad-274efb298a92" />
 
 ## after:
-<img width="708" alt="image" src="https://github.com/user-attachments/assets/f1700593-bc66-487a-bfef-2fc31d8d810c" />
+<img width="713" alt="image" src="https://github.com/user-attachments/assets/0f68176f-d311-4e86-b848-592106a649ca" />
 
 # lua_ls
 ## before:
