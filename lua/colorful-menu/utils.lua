@@ -100,6 +100,8 @@ function M.highlight_range(text, ls, left, right)
     }
 end
 
+-- Shift a highlight range right by name_offset,
+-- insert a color with fallback_hl for label with range (0, name_offset).
 ---@param item CMHighlights
 ---@param name_offset integer
 ---@param label string

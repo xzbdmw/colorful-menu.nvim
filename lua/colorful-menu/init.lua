@@ -51,6 +51,10 @@ M.config = {
         basedpyright = {
             extra_info_hl = "@comment",
         },
+        dartls = {
+            -- Such as (as Iterator), (use std::io).
+            extra_info_hl = "@comment",
+        },
         fallback = true,
     },
     fallback_highlight = "@variable",
@@ -151,6 +155,9 @@ local function _highlights(completion_item, ls)
     elseif ls == "roslyn" then
         item = require("colorful-menu.languages.cs").roslyn(completion_item, ls)
         --
+    elseif ls == "dartls" then
+        item = require("colorful-menu.languages.dart").dartls(completion_item, ls)
+        --
     elseif ls == "basedpyright" or ls == "pyright" or ls == "pylance" then
         item = require("colorful-menu.languages.python").basedpyright(completion_item, "basedpyright")
         --
@@ -194,7 +201,7 @@ end
 ---@diagnostic disable-next-line: undefined-doc-name
 ---@param ctx blink.cmp.DrawItemContext
 function M.blink_components_text(ctx)
-    local highlights_info = require("colorful-menu").blink_highlights(ctx)
+    local highlights_info = M.blink_highlights(ctx)
     if highlights_info ~= nil then
         return highlights_info.label
     else
@@ -207,7 +214,7 @@ end
 ---@param ctx blink.cmp.DrawItemContext
 function M.blink_components_highlight(ctx)
     local highlights = {}
-    local highlights_info = require("colorful-menu").blink_highlights(ctx)
+    local highlights_info = M.blink_highlights(ctx)
     if highlights_info ~= nil then
         highlights = highlights_info.highlights
     end

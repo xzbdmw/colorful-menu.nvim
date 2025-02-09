@@ -18,6 +18,7 @@ Has built-in support for
 - [**zls (Zig)**](#zls)
 - [**roslyn (C#)**](#roslyn)
 - [**basedpyright/pylance/pyright (Python)**](#basedpyright)
+- [**dartls (Dart)**](#dartls)
 
 For other languages, it defaults to use highlight group of item's kind.
 (feel free to open feature request for more languages)
