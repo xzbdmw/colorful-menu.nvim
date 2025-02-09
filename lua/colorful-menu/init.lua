@@ -87,6 +87,10 @@ local function apply_post_processing(item)
                     range[2] = truncated_width + 3
                 end
             end
+            table.insert(item.highlights, {
+                "@comment",
+                range = { truncated_width - 1, truncated_width },
+            })
         end
     end
 end
