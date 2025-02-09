@@ -141,6 +141,8 @@ function M.hl_by_kind(kind)
         highlight_name = M.hl_exist_or("@lsp.type.method", "@function")
     elseif kind == Kind.Function then
         highlight_name = M.hl_exist_or("@lsp.type.function", "@function")
+    elseif kind == Kind.Constructor then
+        highlight_name = "@constructor"
     elseif kind == Kind.Variable then
         highlight_name = M.hl_exist_or("@lsp.type.variable", "@variable")
     elseif kind == Kind.Field then

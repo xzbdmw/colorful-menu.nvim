@@ -17,6 +17,7 @@ function M.dartls(completion_item, ls)
     local detail = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
     if detail ~= nil and detail:find("Auto") ~= nil then
         detail = detail:gsub("Auto import.*\n\n", "")
+        detail = vim.split(detail, "\n")[1]
     end
 
     if not kind then
@@ -43,16 +44,17 @@ function M.dartls(completion_item, ls)
             utils.hl_exist_or("@lsp.type.property", "@variable.member")
         )
         --
-    elseif (kind == Kind.Function or kind == Kind.Method) and detail then
+    elseif (kind == Kind.Function or kind == Kind.Method or kind == Kind.Constructor) and detail then
+        -- elseif (kind == Kind.Function or kind == Kind.Method) and detail then
         -- label: fetchData(..)
         -- detail: (int a, int b) -> Future<String>
-        -- fetchData(int a, int b) ;void (Future<String> s) {}
+        -- fetchData(int a, int b);(Future<String> s)
         local params = string.match(detail or "", "^(%b())")
         local type = string.match(detail or "", "→ (.*)")
         if params ~= nil then
             label = label:gsub("%b()$", "") .. params
         end
-        if type ~= nil then
+        if type ~= nil and kind ~= Kind.Constructor then
             local text = string.format("%s%s;(%s)", label, align_spaces(label, type):sub(3), type)
             local comma_pos = #text - #type - 3
             local ranges = utils.highlight_range(text, ls, 0, #text - 1)
@@ -62,22 +64,11 @@ function M.dartls(completion_item, ls)
         return utils.highlight_range(label, ls, 0, #label)
         --
     else
-        -- Handle other kinds
-        local highlight_name = nil
-        if kind == Kind.Keyword then
-            highlight_name = "@keyword"
-        else
-            highlight_name = config.fallback_highlight
-        end
-        return {
-            text = completion_item.label,
-            highlights = {
-                {
-                    highlight_name,
-                    range = { 0, #completion_item.label },
-                },
-            },
-        }
+        return require("colorful-menu.languages.default").default_highlight(
+            completion_item,
+            detail,
+            config.ls[ls].extra_info_hl
+        )
     end
     return {}
 end

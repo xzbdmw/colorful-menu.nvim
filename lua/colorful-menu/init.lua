@@ -52,7 +52,6 @@ M.config = {
             extra_info_hl = "@comment",
         },
         dartls = {
-            -- Such as (as Iterator), (use std::io).
             extra_info_hl = "@comment",
         },
         fallback = true,
