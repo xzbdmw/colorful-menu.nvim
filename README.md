@@ -56,6 +56,8 @@ return {
                     -- instead of go's original syntax "foo Foo". If align_type_to_right is
                     -- true, this option has no effect.
                     add_colon_before_type = false,
+                    -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
+                    preserve_type_when_truncate = false,
                 },
                 -- for lsp_config or typescript-tools
                 ts_ls = {
@@ -77,6 +79,8 @@ return {
                     align_type_to_right = true,
                     -- the hl group of leading dot of "•std::filesystem::permissions(..)"
                     import_dot_hl = "@comment",
+                    -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
+                    preserve_type_when_truncate = false,
                 },
                 zls = {
                     -- Similar to the same setting of gopls.

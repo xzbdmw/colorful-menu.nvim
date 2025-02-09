@@ -8,14 +8,14 @@ local function align_spaces(abbr, detail)
     if config.ls.clangd.align_type_to_right == false then
         return ""
     end
-    return utils.align_spaces(abbr, detail)
+    return utils.align_spaces_bell(abbr, detail)
 end
 
 local function path_align_spaces(abbr, detail)
     if config.ls.clangd.align_type_to_right == false then
         return "  "
     end
-    return utils.align_spaces(abbr, detail)
+    return utils.align_spaces_bell(abbr, detail)
 end
 
 ---@param completion_item lsp.CompletionItem
@@ -120,6 +120,7 @@ function M.clangd(completion_item, ls)
                 range = { 0, 3 },
             })
         end
+        vim_item.text = vim_item.text:gsub(";\7", "\7;")
         vim_item.text = vim_item.text:gsub(";", " ")
         -- If it is already overflow, just return.
         if max_width and max_width > 0 then

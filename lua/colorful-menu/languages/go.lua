@@ -16,7 +16,7 @@ local function align_spaces(abbr, detail)
     if config.ls.gopls.align_type_to_right == false then
         return " "
     end
-    return utils.align_spaces(abbr, detail)
+    return utils.align_spaces_bell(abbr, detail)
 end
 
 ---@param completion_item lsp.CompletionItem
