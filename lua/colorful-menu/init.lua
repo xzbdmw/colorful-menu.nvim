@@ -105,14 +105,15 @@ local MAX_HL_CACHE_SIZE = 10000
 ---@return string
 local function cache_key(completion_item, ls)
     return string.format(
-        "%s!%s!%s!%s!%s",
+        "%s!%s!%s!%s!%s%s",
         completion_item.label or "",
         completion_item.detail or "",
         completion_item.labelDetails
                 and (completion_item.labelDetails.detail or "") .. (completion_item.labelDetails.description or "")
             or "",
         completion_item.kind and tostring(completion_item.kind) or "",
-        ls
+        ls,
+        require("colorful-menu.utils").max_width()
     )
 end
 
