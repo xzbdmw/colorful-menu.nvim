@@ -54,7 +54,7 @@ return {
                     align_type_to_right = true,
                     -- When true, label for field and variable will format like "foo: Foo"
                     -- instead of go's original syntax "foo Foo". If align_type_to_right is
-					-- true, this option has no effect.
+                    -- true, this option has no effect.
                     add_colon_before_type = false,
                 },
                 -- for lsp_config or typescript-tools
