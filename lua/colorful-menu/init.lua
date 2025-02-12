@@ -68,6 +68,16 @@ local function apply_post_processing(item)
         return item
     end
 
+    for i = #item.highlights, 1, -1 do
+        local hl = item.highlights[i]
+        local range = hl.range
+        if range[2] < 0 then
+            table.remove(item.highlights, i)
+        elseif range[1] < 0 then
+            range[1] = 0
+        end
+    end
+
     local text = item.text
     local max_width = require("colorful-menu.utils").max_width()
     if max_width and max_width > 0 then
