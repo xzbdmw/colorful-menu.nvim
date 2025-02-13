@@ -218,15 +218,23 @@ function M.apply_post_processing(completion_item, item, ls)
         return item
     end
 
-    local text = item.text
-    local max_width = require("colorful-menu.utils").max_width()
+    for i = #item.highlights, 1, -1 do
+        local hl = item.highlights[i]
+        local range = hl.range
+        if range[2] < 0 then
+            table.remove(item.highlights, i)
+        elseif range[1] < 0 then
+            range[1] = 0
+        end
+    end
 
+    local max_width = require("colorful-menu.utils").max_width()
     if not (max_width and max_width > 0) then
         return
     end
 
     local label = completion_item.label
-    local display_width = vim.fn.strdisplaywidth(text)
+    local display_width = vim.fn.strdisplaywidth(item.text)
     if display_width > (item.text:find("\7") ~= nil and (max_width + 1) or max_width) then
         local long_label, type = item.text:match("(.*)\7%s*(.*)")
         local min_label_len = #label
@@ -243,6 +251,9 @@ function M.apply_post_processing(completion_item, item, ls)
             return
         end
 
+        local _, le = item.text:find("\7")
+        local ts = item.text:find(type, le, true)
+        local space_between = ts - le
         item.text = item.text:gsub("\7", " ")
 
         -- Now we need to deal with color shifting stuff.
@@ -254,7 +265,7 @@ function M.apply_post_processing(completion_item, item, ls)
         -- Foo(a st…  "some random stuff"
         -- |         max_width          |
         local long_label_width, type_width = #long_label, #type
-        local short_label_width = math.max(max_width - type_width - 4, min_label_len)
+        local short_label_width = math.max(max_width - type_width - 2 - space_between, min_label_len)
         local should_cut_all = short_label_width == min_label_len
         if should_cut_all then
             remove_color_in_range(item, { left = short_label_width, right = long_label_width })
@@ -266,9 +277,11 @@ function M.apply_post_processing(completion_item, item, ls)
             })
             cut_label(item, max_width)
         else
-            if ls == "clangd" then
-                short_label_width = short_label_width - 1
-            end
+            -- Caculate display_width and real byte diff.
+            local diff = short_label_width - vim.fn.strdisplaywidth(item.text:sub(1, short_label_width))
+            -- We increase the cut threshold if display_width is lower than
+            -- byte count, otherwise the hole is not enough.
+            short_label_width = short_label_width + diff
             local ascii_pos = short_label_width
             for i = short_label_width, 1, -1 do
                 if item.text:sub(i, i):match("[a-zA-Z(]") ~= nil then
@@ -303,7 +316,7 @@ end
 function M.align_spaces(abbr, detail)
     local blank = M.max_width() - vim.fn.strdisplaywidth(abbr) - vim.fn.strdisplaywidth(detail)
     if blank <= 1 then
-        return " "
+        return "  "
     end
     return string.rep(" ", blank)
 end

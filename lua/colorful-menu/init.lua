@@ -23,7 +23,7 @@ M.config = {
             add_colon_before_type = false,
             align_type_to_right = true,
             -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
-            preserve_type_when_truncate = false,
+            preserve_type_when_truncate = true,
         },
         ts_ls = {
             extra_info_hl = "@comment",
@@ -46,7 +46,7 @@ M.config = {
             import_dot_hl = "@comment",
             align_type_to_right = true,
             -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
-            preserve_type_when_truncate = false,
+            preserve_type_when_truncate = true,
         },
         roslyn = {
             extra_info_hl = "@comment",

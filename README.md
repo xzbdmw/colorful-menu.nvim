@@ -57,7 +57,7 @@ return {
                     -- true, this option has no effect.
                     add_colon_before_type = false,
                     -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
-                    preserve_type_when_truncate = false,
+                    preserve_type_when_truncate = true,
                 },
                 -- for lsp_config or typescript-tools
                 ts_ls = {
@@ -80,7 +80,7 @@ return {
                     -- the hl group of leading dot of "•std::filesystem::permissions(..)"
                     import_dot_hl = "@comment",
                     -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
-                    preserve_type_when_truncate = false,
+                    preserve_type_when_truncate = true,
                 },
                 zls = {
                     -- Similar to the same setting of gopls.
