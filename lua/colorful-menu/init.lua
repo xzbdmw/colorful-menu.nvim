@@ -22,6 +22,8 @@ M.config = {
             -- instead of go's original syntax "foo Foo".
             add_colon_before_type = false,
             align_type_to_right = true,
+            -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
+            preserve_type_when_truncate = true,
         },
         ts_ls = {
             extra_info_hl = "@comment",
@@ -43,6 +45,8 @@ M.config = {
             -- the hl of leading dot of "•std::filesystem::permissions(..)"
             import_dot_hl = "@comment",
             align_type_to_right = true,
+            -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
+            preserve_type_when_truncate = true,
         },
         roslyn = {
             extra_info_hl = "@comment",
@@ -59,51 +63,6 @@ M.config = {
     fallback_highlight = "@variable",
     max_width = 60,
 }
-
----@param item CMHighlights
----@return CMHighlights?
-local function apply_post_processing(item)
-    -- if the user override or fallback logic didn't produce a table, bail
-    if type(item) ~= "table" or not item.text then
-        return item
-    end
-
-    for i = #item.highlights, 1, -1 do
-        local hl = item.highlights[i]
-        local range = hl.range
-        if range[2] < 0 then
-            table.remove(item.highlights, i)
-        elseif range[1] < 0 then
-            range[1] = 0
-        end
-    end
-
-    local text = item.text
-    local max_width = require("colorful-menu.utils").max_width()
-    if max_width and max_width > 0 then
-        local display_width = vim.fn.strdisplaywidth(text)
-        if display_width > max_width then
-            -- We can remove from the end
-            -- or do partial truncation using `strcharpart` or `strdisplaywidth` logic.
-            local truncated = vim.fn.strcharpart(text, 0, max_width - 1) .. "…"
-            item.text = truncated
-            local truncated_width = vim.fn.strdisplaywidth(truncated)
-            for i = #item.highlights, 1, -1 do
-                local hl = item.highlights[i]
-                local range = hl.range
-                if range[1] > truncated_width + 3 then
-                    table.remove(item.highlights, i)
-                elseif range[2] > truncated_width + 3 then
-                    range[2] = truncated_width + 3
-                end
-            end
-            table.insert(item.highlights, {
-                "@comment",
-                range = { truncated_width - 1, truncated_width },
-            })
-        end
-    end
-end
 
 local hl_cache = {}
 local hl_cache_size = 0
@@ -188,7 +147,7 @@ local function _highlights(completion_item, ls)
     end
 
     if item then
-        apply_post_processing(item)
+        require("colorful-menu.utils").apply_post_processing(completion_item, item, ls)
     end
 
     hl_cache_size = hl_cache_size + 1
