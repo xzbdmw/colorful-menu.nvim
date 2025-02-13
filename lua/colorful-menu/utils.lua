@@ -307,16 +307,16 @@ end
 
 function M.align_spaces_bell(abbr, detail)
     local blank = M.max_width() - vim.fn.strdisplaywidth(abbr) - vim.fn.strdisplaywidth(detail)
-    if blank <= 1 then
-        return "\7 "
+    if blank <= 2 then
+        return "\7  "
     end
     return "\7" .. string.rep(" ", blank - 1)
 end
 
 function M.align_spaces(abbr, detail)
     local blank = M.max_width() - vim.fn.strdisplaywidth(abbr) - vim.fn.strdisplaywidth(detail)
-    if blank <= 1 then
-        return "  "
+    if blank <= 2 then
+        return "   "
     end
     return string.rep(" ", blank)
 end

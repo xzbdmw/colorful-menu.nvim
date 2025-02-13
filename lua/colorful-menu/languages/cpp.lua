@@ -120,7 +120,6 @@ function M.clangd(completion_item, ls)
                 range = { 0, 3 },
             })
         end
-        vim_item.text = vim_item.text:gsub(";\7", "\7;")
         vim_item.text = vim_item.text:gsub(";", " ")
         -- If it is already overflow, just return.
         if max_width and max_width > 0 then
