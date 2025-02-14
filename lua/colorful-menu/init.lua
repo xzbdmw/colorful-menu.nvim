@@ -38,6 +38,8 @@ M.config = {
             -- Such as (as Iterator), (use std::io).
             extra_info_hl = "@comment",
             align_type_to_right = true,
+            -- See https://github.com/xzbdmw/colorful-menu.nvim/pull/36
+            preserve_type_when_truncate = true,
         },
         clangd = {
             -- Such as "<stdio.h>".
@@ -106,6 +108,7 @@ local function _highlights(completion_item, ls)
         --
     elseif ls == "rust-analyzer" or ls == "rust_analyzer" then
         item = require("colorful-menu.languages.rust").rust_analyzer(completion_item, ls)
+        ls = "rust-analyzer"
         --
     elseif ls == "lua_ls" then
         item = require("colorful-menu.languages.lua").lua_ls(completion_item, ls)

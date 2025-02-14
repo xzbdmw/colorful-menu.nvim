@@ -106,8 +106,9 @@ end
 ---@param name_offset integer
 ---@param label string
 ---@param fallback_hl string?
+---@param custom_hl CMHighlightRange[]?
 ---@return CMHighlights
-function M.adjust_range(item, name_offset, label, fallback_hl)
+function M.adjust_range(item, name_offset, label, fallback_hl, custom_hl)
     if name_offset == 0 then
         return item
     end
@@ -117,10 +118,16 @@ function M.adjust_range(item, name_offset, label, fallback_hl)
         highlight.range[2] = highlight.range[2] + name_offset
     end
     item.text = label:sub(1, name_offset) .. item.text
-    table.insert(item.highlights, {
-        fallback_hl or "@variable",
-        range = { 0, name_offset },
-    })
+    if custom_hl then
+        for _, hl in ipairs(custom_hl) do
+            table.insert(item.highlights, hl)
+        end
+    else
+        table.insert(item.highlights, {
+            fallback_hl or "@variable",
+            range = { 0, name_offset },
+        })
+    end
     return item
 end
 
@@ -237,7 +244,6 @@ function M.apply_post_processing(completion_item, item, ls)
     local display_width = vim.fn.strdisplaywidth(item.text)
     if display_width > (item.text:find("\7") ~= nil and (max_width + 1) or max_width) then
         local long_label, type = item.text:match("(.*)\7%s*(.*)")
-        local min_label_len = #label
         if
             item.text == label
             or type == nil
@@ -265,15 +271,22 @@ function M.apply_post_processing(completion_item, item, ls)
         -- Foo(a st…  "some random stuff"
         -- |         max_width          |
         local long_label_width, type_width = #long_label, #type
-        local short_label_width = math.max(max_width - type_width - 2 - space_between, min_label_len)
-        local should_cut_all = short_label_width == min_label_len
+        local short_label_width = math.max(max_width - type_width - 2 - space_between, #label)
+        local should_cut_all = short_label_width == #label
         if should_cut_all then
             remove_color_in_range(item, { left = short_label_width, right = long_label_width })
-            shift_color_by(item, long_label_width - short_label_width - string.len("(…)"), long_label_width)
-            item.text = item.text:sub(1, short_label_width) .. "(…)" .. item.text:sub(long_label_width + 1)
+            local pretty_end = "(…)"
+            if label:sub(short_label_width, short_label_width) == ")" then
+                pretty_end = "…)"
+            end
+            shift_color_by(item, long_label_width - short_label_width - string.len(pretty_end), long_label_width)
+            item.text = item.text:sub(1, short_label_width) .. pretty_end .. item.text:sub(long_label_width + 1)
             table.insert(item.highlights, {
                 "@comment",
-                range = { short_label_width + 1, short_label_width + string.len("…)") },
+                range = {
+                    short_label_width + (pretty_end == "(…)" and 1 or 0),
+                    short_label_width + (pretty_end == "(…)" and string.len("…)") or string.len("…")),
+                },
             })
             cut_label(item, max_width)
         else
