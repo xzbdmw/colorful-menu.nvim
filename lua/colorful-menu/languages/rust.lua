@@ -14,7 +14,7 @@ end
 
 local cashed_self_hl = nil
 ---@return CMHighlightRange[]
-local function iter_self()
+local function iter_chain()
     if cashed_self_hl == nil then
         local source = "fn iter(){}"
         local hl = utils.highlight_range(source, "rust-analyzer", 3, #source - 2)
@@ -73,11 +73,24 @@ local function _rust_analyzer(completion_item, ls)
     elseif (kind == Kind.Function or kind == Kind.Method) and detail then
         local pattern = "%((.-)%)"
         local label = completion_item.label
-        local has_iter = false
+
+        local ignored = nil
         if label:match("^iter%(%)%..+") ~= nil then
-            has_iter = true
-            label = completion_item.label:sub(string.len("iter().") + 1)
+            ignored = "iter()."
+            label = completion_item.label:sub(string.len(ignored) + 1)
         end
+        if label:match("^self%..+") ~= nil then
+            ignored = "self."
+            label = completion_item.label:sub(string.len(ignored) + 1)
+        end
+        local function adjust(hl)
+            if ignored == "self." then
+                utils.adjust_range(hl, string.len(ignored) + 1, ignored)
+            elseif ignored == "iter()." then
+                utils.adjust_range(hl, string.len(ignored) + 1, ignored, nil, iter_chain())
+            end
+        end
+
         local result = string.match(label, pattern)
         if not result then
             label = completion_item.label .. "()"
@@ -89,6 +102,7 @@ local function _rust_analyzer(completion_item, ls)
             if start_pos then
                 suffix = suffix:sub(start_pos, #suffix)
             end
+
             if
                 config.ls["rust-analyzer"].preserve_type_when_truncate
                 and config.ls["rust-analyzer"].align_type_to_right
@@ -106,13 +120,13 @@ local function _rust_analyzer(completion_item, ls)
                     "%s %s->%s%s{}",
                     prefix,
                     call,
-                    align_spaces(call .. "  ", has_iter and type .. "iter()." or type),
+                    align_spaces(call .. "  ", ignored ~= nil and type .. ignored or type),
                     type or ""
                 )
                 local hl = utils.highlight_range(source, ls, #prefix + 1, #source - 2)
                 hl.text = hl.text:sub(1, #call) .. "  " .. hl.text:sub(#call + 3)
-                if has_iter then
-                    utils.adjust_range(hl, string.len("iter().") + 1, "iter().", nil, iter_self())
+                if ignored ~= nil then
+                    adjust(hl)
                 end
                 return hl
             else
@@ -122,8 +136,8 @@ local function _rust_analyzer(completion_item, ls)
                 end
                 local source = string.format("%s %s {}", prefix, call)
                 local hl = utils.highlight_range(source, ls, #prefix + 1, #source - 3)
-                if has_iter then
-                    utils.adjust_range(hl, string.len("iter().") + 1, "iter().", nil, iter_self())
+                if ignored ~= nil then
+                    adjust(hl)
                 end
                 return hl
             end
