@@ -187,21 +187,55 @@ local function remove_color_in_range(item, rang)
     end
 end
 
+local function left_brace_one_more_than_right_brace(s)
+    local left = 0
+    local right = 0
+    for i = 1, #s do
+        local char = s:sub(i, i)
+        if char == "(" then
+            left = left + 1
+        elseif char == ")" then
+            right = right + 1
+        end
+    end
+    return left == right + 1
+end
+
 ---@param item CMHighlights
 ---@param max_width integer
-local function cut_label(item, max_width)
+---@param direct boolean -- without type info
+local function cut_label(item, max_width, direct)
     if vim.fn.strdisplaywidth(item.text) <= max_width then
         return
     end
     local text = item.text
-    local truncated = vim.fn.strcharpart(text, 0, max_width - 1) .. "…"
-    item.text = truncated
-    local truncated_width = #truncated
-    remove_color_in_range(item, { left = truncated_width, right = math.huge })
-    table.insert(item.highlights, {
-        "@comment",
-        range = { truncated_width - 3, truncated_width },
-    })
+    --- Given
+    --- self.foo(asdasd)
+    --- self.foo(asdasd…
+    --- self.foo(asdas…)
+    if direct and left_brace_one_more_than_right_brace(vim.fn.strcharpart(text, 0, max_width)) then
+        local truncated = vim.fn.strcharpart(text, 0, max_width - 2) .. "…)"
+        item.text = truncated
+        local truncated_width = #truncated
+        remove_color_in_range(item, { left = truncated_width, right = math.huge })
+        table.insert(item.highlights, {
+            "@comment",
+            range = { truncated_width - 4, truncated_width - 1 },
+        })
+        table.insert(item.highlights, {
+            "@punctuation.bracket",
+            range = { truncated_width - 1, truncated_width },
+        })
+    else
+        local truncated = vim.fn.strcharpart(text, 0, max_width - 1) .. "…"
+        item.text = truncated
+        local truncated_width = #truncated
+        remove_color_in_range(item, { left = truncated_width, right = math.huge })
+        table.insert(item.highlights, {
+            "@comment",
+            range = { truncated_width - 3, truncated_width },
+        })
+    end
 end
 
 ---@param item CMHighlights
@@ -244,16 +278,17 @@ function M.apply_post_processing(completion_item, item, ls)
     local display_width = vim.fn.strdisplaywidth(item.text)
     if display_width > (item.text:find("\7") ~= nil and (max_width + 1) or max_width) then
         local long_label, type = item.text:match("(.*)\7%s*(.*)")
+        local is_func = completion_item.kind == Kind.Function or completion_item.kind == Kind.Method
         if
             item.text == label
             or type == nil
             or #type == 0
-            or (completion_item.kind ~= Kind.Function and completion_item.kind ~= Kind.Method)
+            or not is_func
             or not config.ls[ls]
             or not config.ls[ls].preserve_type_when_truncate
         then
             item.text = item.text:gsub("\7", " ")
-            cut_label(item, max_width)
+            cut_label(item, max_width, is_func)
             return
         end
 
@@ -288,7 +323,7 @@ function M.apply_post_processing(completion_item, item, ls)
                     short_label_width + (pretty_end == "(…)" and string.len("…)") or string.len("…")),
                 },
             })
-            cut_label(item, max_width)
+            cut_label(item, max_width, false)
         else
             -- Caculate display_width and real byte diff.
             local diff = short_label_width - vim.fn.strdisplaywidth(item.text:sub(1, short_label_width))
