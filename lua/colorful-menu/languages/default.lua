@@ -3,12 +3,14 @@ local utils = require("colorful-menu.utils")
 local M = {}
 
 ---@param completion_item lsp.CompletionItem
----@param detail string?
+---@param detail? string
+---@param lang? string
+---@param extra_info_hl? string
 ---@return CMHighlights
-function M.default_highlight(completion_item, detail, extra_info_hl)
+function M.default_highlight(completion_item, detail, lang, extra_info_hl)
     extra_info_hl = extra_info_hl or "@comment"
     local label = completion_item.label
-    local highlight_name = utils.hl_by_kind(completion_item.kind)
+    local highlight_name = utils.hl_by_kind(completion_item.kind, lang)
 
     local highlights = {
         {

@@ -41,7 +41,7 @@ function M.dartls(completion_item, ls)
             items,
             #label + 1,
             source,
-            utils.hl_exist_or("@lsp.type.property", "@variable.member")
+            utils.hl_exist_or("@lsp.type.property", "@variable.member", "dart")
         )
         --
     elseif (kind == Kind.Function or kind == Kind.Method or kind == Kind.Constructor) and detail then
@@ -67,7 +67,8 @@ function M.dartls(completion_item, ls)
         return require("colorful-menu.languages.default").default_highlight(
             completion_item,
             detail,
-            config.ls[ls].extra_info_hl
+            config.ls[ls].extra_info_hl,
+            "dart"
         )
     end
     return {}

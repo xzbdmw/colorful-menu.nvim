@@ -133,37 +133,55 @@ end
 
 ---@param hl_group string
 ---@param fallback string
-function M.hl_exist_or(hl_group, fallback)
-    local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = hl_group })
-    if ok and hl ~= nil and not vim.tbl_isempty(hl) then
-        return hl_group
-    else
+---@param lang? string
+function M.hl_exist_or(hl_group, fallback, lang)
+    local f = function()
+        local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = hl_group })
+        if ok and hl ~= nil and not vim.tbl_isempty(hl) then
+            return hl_group
+        end
         return fallback
+    end
+
+    local ok, hl
+    if lang ~= nil then
+        local lang_hl = hl_group .. "." .. lang
+        ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = lang_hl })
+        if ok and hl ~= nil and not vim.tbl_isempty(hl) then
+            return lang_hl
+        else
+            return f()
+        end
+    else
+        return f()
     end
 end
 
-function M.hl_by_kind(kind)
+---@param kind integer
+---@param lang? string
+---@return string
+function M.hl_by_kind(kind, lang)
     local highlight_name
     if kind == Kind.Method then
-        highlight_name = M.hl_exist_or("@lsp.type.method", "@function")
+        highlight_name = M.hl_exist_or("@lsp.type.method", "@function", lang)
     elseif kind == Kind.Function then
-        highlight_name = M.hl_exist_or("@lsp.type.function", "@function")
+        highlight_name = M.hl_exist_or("@lsp.type.function", "@function", lang)
     elseif kind == Kind.Constructor then
         highlight_name = "@constructor"
     elseif kind == Kind.Variable then
-        highlight_name = M.hl_exist_or("@lsp.type.variable", "@variable")
+        highlight_name = M.hl_exist_or("@lsp.type.variable", "@variable", lang)
     elseif kind == Kind.Field then
-        highlight_name = M.hl_exist_or("@lsp.type.field", "@field")
+        highlight_name = M.hl_exist_or("@lsp.type.field", "@field", lang)
     elseif kind == Kind.Keyword then
         highlight_name = "@keyword"
     elseif kind == Kind.Property then
-        highlight_name = M.hl_exist_or("@lsp.type.property", "@property")
+        highlight_name = M.hl_exist_or("@lsp.type.property", "@property", lang)
     elseif kind == Kind.Module then
-        highlight_name = M.hl_exist_or("@lsp.type.namespace", "@namespace")
+        highlight_name = M.hl_exist_or("@lsp.type.namespace", "@namespace", lang)
     elseif kind == Kind.Class then
-        highlight_name = M.hl_exist_or("@lsp.type.class", "@type")
+        highlight_name = M.hl_exist_or("@lsp.type.class", "@type", lang)
     elseif kind == Kind.Struct then
-        highlight_name = M.hl_exist_or("@lsp.type.struct", "@type")
+        highlight_name = M.hl_exist_or("@lsp.type.struct", "@type", lang)
     elseif kind == Kind.Constant then
         highlight_name = "@constant"
     else

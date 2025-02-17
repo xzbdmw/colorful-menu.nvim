@@ -10,7 +10,8 @@ function M.basedpyright(completion_item, ls)
     return require("colorful-menu.languages.default").default_highlight(
         completion_item,
         path,
-        config.ls[ls].extra_info_hl
+        config.ls[ls].extra_info_hl,
+        "python"
     )
 end
 

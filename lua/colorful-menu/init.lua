@@ -145,6 +145,7 @@ local function _highlights(completion_item, ls)
         item = require("colorful-menu.languages.default").default_highlight(
             completion_item,
             completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail,
+            nil,
             "@comment"
         )
     end

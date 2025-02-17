@@ -59,7 +59,7 @@ function M.zls(completion_item, ls)
             items,
             #label + 1,
             source,
-            utils.hl_exist_or("@lsp.type.property", "@variable.member")
+            utils.hl_exist_or("@lsp.type.property", "@variable.member", "zig")
         )
     elseif (kind == Kind.Function or kind == Kind.Method) and detail then
         if detail:sub(1, 2) == "fn" then
@@ -94,7 +94,7 @@ function M.zls(completion_item, ls)
         if kind == Kind.Keyword then
             highlight_name = "@keyword"
         elseif kind == Kind.Field then
-            highlight_name = utils.hl_exist_or("@lsp.type.property", "@variable.member")
+            highlight_name = utils.hl_exist_or("@lsp.type.property", "@variable.member", "zig")
         else
             highlight_name = config.fallback_highlight
         end
