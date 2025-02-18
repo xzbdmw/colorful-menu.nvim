@@ -86,6 +86,11 @@ function M.gopls(completion_item, ls)
         local var_part = text:sub(name_offset)
         local source = string.format("var %s", var_part)
         local item = utils.highlight_range(source, ls, 4, 4 + #var_part)
+        if kind == Kind.Constant then
+            if #item.highlights >= 1 then
+                item.highlights[1][1] = utils.hl_exist_or("@constant", "@variable", "go")
+            end
+        end
         return utils.adjust_range(item, name_offset, text)
         --
     elseif kind == Kind.Struct then

@@ -157,7 +157,7 @@ function M.hl_exist_or(hl_group, fallback, lang)
     end
 end
 
----@param kind integer
+---@param kind? integer
 ---@param lang? string
 ---@return string
 function M.hl_by_kind(kind, lang)
