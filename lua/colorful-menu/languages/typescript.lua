@@ -104,18 +104,20 @@ function M.vtsls(completion_item, ls)
         },
     }
     local text = label
-    if description then
-        text = label .. " " .. one_line(description)
-        table.insert(highlights, {
-            config.ls.vtsls.extra_info_hl,
-            range = { #label + 1, #text - 1 },
-        })
-    elseif detail then
-        text = label .. " " .. one_line(detail)
-        table.insert(highlights, {
-            config.ls.vtsls.extra_info_hl,
-            range = { #label + 1, #text - 1 },
-        })
+    if config.ls.vtsls.extra_info_hl ~= false then
+        if description then
+            text = label .. " " .. one_line(description)
+            table.insert(highlights, {
+                config.ls.vtsls.extra_info_hl,
+                range = { #label + 1, #text - 1 },
+            })
+        elseif detail then
+            text = label .. " " .. one_line(detail)
+            table.insert(highlights, {
+                config.ls.vtsls.extra_info_hl,
+                range = { #label + 1, #text - 1 },
+            })
+        end
     end
 
     return {
