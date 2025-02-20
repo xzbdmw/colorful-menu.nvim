@@ -61,9 +61,13 @@ return {
                 },
                 -- for lsp_config or typescript-tools
                 ts_ls = {
+                    -- false means do not include any extra info,
+                    -- see https://github.com/xzbdmw/colorful-menu.nvim/issues/42
                     extra_info_hl = "@comment",
                 },
                 vtsls = {
+                    -- false means do not include any extra info,
+                    -- see https://github.com/xzbdmw/colorful-menu.nvim/issues/42
                     extra_info_hl = "@comment",
                 },
                 ["rust-analyzer"] = {

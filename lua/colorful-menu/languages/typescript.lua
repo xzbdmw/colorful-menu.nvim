@@ -12,7 +12,7 @@ function M.ts_server(completion_item, ls)
     local detail = completion_item.detail
     local kind = completion_item.kind
     -- Combine label + detail for final display
-    local text = detail and (label .. " " .. detail) or label
+    local text = (detail and config.ls.ts_ls.extra_info_hl ~= false) and (label .. " " .. detail) or label
 
     if not kind then
         return utils.highlight_range(text, ls, 0, #text)
@@ -44,7 +44,7 @@ function M.ts_server(completion_item, ls)
         },
     }
 
-    if detail then
+    if detail and config.ls.ts_ls.extra_info_hl ~= false then
         local extra_info_hl = config.ls.ts_ls.extra_info_hl
         table.insert(highlights, {
             extra_info_hl,

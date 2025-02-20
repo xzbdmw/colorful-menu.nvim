@@ -26,9 +26,13 @@ M.config = {
             preserve_type_when_truncate = true,
         },
         ts_ls = {
+            -- false means do not include any extra info,
+            -- see https://github.com/xzbdmw/colorful-menu.nvim/issues/42
             extra_info_hl = "@comment",
         },
         vtsls = {
+            -- false means do not include any extra info,
+            -- see https://github.com/xzbdmw/colorful-menu.nvim/issues/42
             extra_info_hl = "@comment",
         },
         zls = {
