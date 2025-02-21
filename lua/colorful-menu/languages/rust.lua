@@ -93,7 +93,7 @@ local function _rust_analyzer(completion_item, ls)
 
         local result = string.match(label, pattern)
         if not result then
-            label = completion_item.label .. "()"
+            label = label .. "()"
         end
         local regex_pattern = "%b()"
         local prefix, suffix = string.match(function_signature or "", "^(.*fn)(.*)$")
