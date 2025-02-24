@@ -65,6 +65,7 @@ M.config = {
             extra_info_hl = "@comment",
         },
         fallback = true,
+        fallback_extra_info_hl = "@comment",
     },
     fallback_highlight = "@variable",
     max_width = 60,
@@ -150,7 +151,7 @@ local function _highlights(completion_item, ls)
             completion_item,
             completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail,
             nil,
-            "@comment"
+            M.config.ls.fallback_extra_info_hl
         )
     end
 
