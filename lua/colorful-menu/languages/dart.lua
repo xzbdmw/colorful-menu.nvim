@@ -67,8 +67,8 @@ function M.dartls(completion_item, ls)
         return require("colorful-menu.languages.default").default_highlight(
             completion_item,
             detail,
-            config.ls[ls].extra_info_hl,
-            "dart"
+            "dart",
+            config.ls[ls].extra_info_hl
         )
     end
     return {}
