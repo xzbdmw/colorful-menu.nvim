@@ -20,7 +20,7 @@ function M.default_highlight(completion_item, detail, lang, extra_info_hl)
     }
 
     local text = label
-    if detail and string.find(detail, "\n") == nil then
+    if detail and string.find(detail, "\n") == nil and string.find(detail, "\r") == nil then
         local spaces = utils.align_spaces(label, detail)
         -- If there are any information, append it
         text = label .. spaces .. detail

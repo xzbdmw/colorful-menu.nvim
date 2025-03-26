@@ -17,7 +17,7 @@ function M.dartls(completion_item, ls)
     local detail = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
     if detail ~= nil and detail:find("Auto") ~= nil then
         detail = detail:gsub("Auto import.*\n\n", "")
-        detail = vim.split(detail, "\n")[1]
+        detail = vim.split(detail:gsub("\r\n?", "\n"), "\n")[1]
     end
 
     if not kind then

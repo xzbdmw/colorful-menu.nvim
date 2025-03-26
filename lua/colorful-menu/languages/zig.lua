@@ -67,8 +67,12 @@ function M.zls(completion_item, ls)
         )
     elseif (kind == Kind.Function or kind == Kind.Method) and detail then
         if detail:sub(1, 2) == "fn" then
-            local ret_type = vim.split(vim.tbl_get(completion_item, "labelDetails", "description") or "", "\n")[1]
-            local params = vim.split(vim.tbl_get(completion_item, "labelDetails", "detail") or "", "\n")[1]
+            local ret_type = vim.split(
+                (vim.tbl_get(completion_item, "labelDetails", "description") or ""):gsub("\r\n?", "\n"),
+                "\n"
+            )[1]
+            local params =
+                vim.split((vim.tbl_get(completion_item, "labelDetails", "detail") or ""):gsub("\r\n?", "\n"), "\n")[1]
             local text, source
             if ret_type ~= "" and params ~= "" and config.ls.zls.align_type_to_right then
                 text = string.format("%s%s%s%s", label, params, align_spaces(label .. params, ret_type), ret_type)

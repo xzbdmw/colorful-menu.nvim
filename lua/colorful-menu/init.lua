@@ -156,6 +156,7 @@ local function _highlights(completion_item, ls)
     end
 
     if item then
+        item = require("colorful-menu.utils").validate_newline(completion_item, item)
         require("colorful-menu.utils").apply_post_processing(completion_item, item, ls)
     end
 

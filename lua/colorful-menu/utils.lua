@@ -268,6 +268,26 @@ local function shift_color_by(item, offset, start)
     end
 end
 
+---@param completion_item lsp.CompletionItem
+---@param item CMHighlights
+function M.validate_newline(completion_item, item)
+    if string.find(item.text, "\n") ~= nil or string.find(item.text, "\r") ~= nil then
+        vim.notify_once(
+            '[colorful-menu.nvim]: Completion "'
+                .. completion_item.label
+                .. '" has new line character, please open an issue',
+            vim.log.levels.WARN
+        )
+        return require("colorful-menu.languages.default").default_highlight(
+            completion_item,
+            nil,
+            nil,
+            require("colorful-menu").config.ls.fallback_extra_info_hl
+        )
+    end
+    return item
+end
+
 ---@param item CMHighlights
 ---@param ls string
 ---@return CMHighlights?

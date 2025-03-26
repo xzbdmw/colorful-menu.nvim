@@ -134,7 +134,8 @@ function M.clangd(completion_item, ls)
         local document = completion_item.documentation
         if document and document.value and vim.startswith(document.value, "From ") then
             local len = #vim_item.text
-            local include_path = vim.trim(vim.split(document.value, "\n")[1]):sub(6, #document.value)
+            local include_path = vim.trim(vim.split(document.value:gsub("\r\n?", "\n"), "\n")[1])
+                :sub(6, #document.value)
             if include_path:sub(1, 1) == "`" and include_path:sub(#include_path, #include_path) == "`" then
                 include_path = include_path:sub(2, #include_path - 1)
             end
