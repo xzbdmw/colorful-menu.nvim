@@ -71,7 +71,6 @@ function M.dartls(completion_item, ls)
             config.ls[ls].extra_info_hl
         )
     end
-    return {}
 end
 
 return M

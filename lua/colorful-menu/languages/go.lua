@@ -152,7 +152,6 @@ function M.gopls(completion_item, ls)
             },
         }
     end
-    return {}
 end
 
 return M
