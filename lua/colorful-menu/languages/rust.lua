@@ -27,6 +27,7 @@ end
 ---@param ls string
 ---@return CMHighlights
 local function _rust_analyzer(completion_item, ls)
+    local label = completion_item.label
     local detail = completion_item.labelDetails and completion_item.labelDetails.detail or completion_item.detail
     local function_signature = completion_item.labelDetails and completion_item.labelDetails.description
         or completion_item.detail
@@ -47,6 +48,14 @@ local function _rust_analyzer(completion_item, ls)
         hl.text = hl.text:sub(1, #name) .. " " .. hl.text:sub(#name + 2, #text)
         return hl
         --
+    elseif
+        completion_item.insertTextFormat == insertTextFormat.Snippet
+        and (label:find("::", nil, true) ~= nil or label == "Some(…)" or label == "None" or label == "Ok(…)" or label == "Err(…)")
+        and label:sub(1, 1) >= "A"
+        and label:sub(1, 1) <= "Z"
+    then
+        local source = string.format("match s { %s }", label)
+        return utils.highlight_range(source, ls, 10, 10 + #label)
     elseif
         (kind == Kind.Constant or kind == Kind.Variable)
         and detail
@@ -73,7 +82,6 @@ local function _rust_analyzer(completion_item, ls)
         --
     elseif (kind == Kind.Function or kind == Kind.Method) and detail then
         local pattern = "%((.-)%)"
-        local label = completion_item.label
 
         local ignored = nil
         if label:match("^iter%(%)%..+") ~= nil then
