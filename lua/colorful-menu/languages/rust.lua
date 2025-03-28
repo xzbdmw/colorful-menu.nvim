@@ -68,7 +68,8 @@ local function _rust_analyzer(completion_item, ls)
         return hl
         --
     elseif (kind == Kind.EnumMember) and detail then
-        return utils.highlight_range(detail, ls, 0, #detail)
+        local source = string.format("enum S { %s }", detail)
+        return utils.highlight_range(source, ls, 9, 9 + #detail)
         --
     elseif (kind == Kind.Function or kind == Kind.Method) and detail then
         local pattern = "%((.-)%)"
