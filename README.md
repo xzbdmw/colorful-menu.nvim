@@ -6,7 +6,11 @@
 </p>
 
 Out of box, this plugin reconstructs completion item and applies treesitter highlight queries to
-produce richly colorized completion items with variable-size highlight ranges.
+produce variable-size highlight ranges.
+
+For example, for a string field `foo` in go, we can reconstruct it to `type s
+struct { foo string }`, and only fetch and display the text and highlights for the `foo
+string` part.
 
 Has built-in support for
 - [**rust-analyzer (Rust)**](#rust-analyzer)
@@ -21,9 +25,8 @@ Has built-in support for
 - [**dartls (Dart)**](#dartls)
 
 For other languages, it defaults to use highlight group of item's kind.
-(feel free to open feature request for more languages)
 
-Currently supports **nvim-cmp** and **blink.cmp**.
+Supports **nvim-cmp** and **blink.cmp**.
 
 ## Installation
 
