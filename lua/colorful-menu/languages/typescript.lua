@@ -109,13 +109,13 @@ function M.vtsls(completion_item, ls)
             text = label .. " " .. one_line(description)
             table.insert(highlights, {
                 config.ls.vtsls.extra_info_hl,
-                range = { #label + 1, #text - 1 },
+                range = { #label + 1, #text },
             })
         elseif detail then
             text = label .. " " .. one_line(detail)
             table.insert(highlights, {
                 config.ls.vtsls.extra_info_hl,
-                range = { #label + 1, #text - 1 },
+                range = { #label + 1, #text },
             })
         end
     end
