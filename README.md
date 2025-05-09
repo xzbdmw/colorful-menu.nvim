@@ -21,7 +21,7 @@ Has built-in support for
 - [**intelephense (PHP)**](#intelephense)
 - [**zls (Zig)**](#zls)
 - [**roslyn (C#)**](#roslyn)
-- [**basedpyright/pylance/pyright (Python)**](#basedpyright)
+- [**basedpyright/pylance/pyright/pylsp (Python)**](#basedpyright)
 - [**dartls (Dart)**](#dartls)
 
 For other languages, it defaults to use highlight group of item's kind.
