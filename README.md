@@ -106,6 +106,12 @@ return {
                     -- It is usually import path such as "os"
                     extra_info_hl = "@comment",
                 },
+                pylsp = {
+                    extra_info_hl = "@comment",
+                    -- Dim the function argument area, which is the main
+                    -- difference with pyright.
+                    arguments_hl = "@comment",
+                },
                 -- If true, try to highlight "not supported" languages.
                 fallback = true,
                 -- this will be applied to label description for unsupport languages

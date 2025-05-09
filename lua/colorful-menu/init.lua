@@ -61,6 +61,12 @@ M.config = {
         basedpyright = {
             extra_info_hl = "@comment",
         },
+        pylsp = {
+            extra_info_hl = "@comment",
+            -- Dim the function argument area, which is the main
+            -- difference with pyright.
+            arguments_hl = "@comment",
+        },
         dartls = {
             extra_info_hl = "@comment",
         },
@@ -139,8 +145,8 @@ local function _highlights(completion_item, ls)
     elseif ls == "dartls" then
         item = require("colorful-menu.languages.dart").dartls(completion_item, ls)
         --
-    elseif ls == "basedpyright" or ls == "pyright" or ls == "pylance" then
-        item = require("colorful-menu.languages.python").basedpyright(completion_item, "basedpyright")
+    elseif ls == "basedpyright" or ls == "pyright" or ls == "pylance" or ls == "pylsp" then
+        item = require("colorful-menu.languages.python").py(completion_item, ls)
         --
     else
         -- No languages detected so check if we should highlight with default or not
