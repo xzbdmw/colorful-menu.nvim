@@ -180,7 +180,7 @@ end
 ---@param entry cmp.Entry
 function M.cmp_highlights(entry)
     local client = vim.tbl_get(entry, "source", "source", "client") -- For example `lua_ls` etc
-    if client and not client.is_stopped() then
+    if client and not client:is_stopped() then
         ---@diagnostic disable-next-line: undefined-field
         return _highlights(entry:get_completion_item(), client.name)
     end
@@ -220,7 +220,7 @@ function M.blink_highlights(ctx)
     ---@diagnostic disable-next-line: undefined-field
     local client = vim.lsp.get_client_by_id(ctx.item.client_id)
     local highlights = {}
-    if client and not client.is_stopped() then
+    if client and not client:is_stopped() then
         ---@diagnostic disable-next-line: undefined-field
         local highlights_info = _highlights(ctx.item, client.name)
         if highlights_info ~= nil then
