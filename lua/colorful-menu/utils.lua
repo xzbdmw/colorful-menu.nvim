@@ -360,13 +360,44 @@ function M.apply_post_processing(completion_item, item, ls)
             shift_color_by(item, long_label_width - short_label_width - string.len(pretty_end), long_label_width)
             item.text = item.text:sub(1, short_label_width) .. pretty_end .. item.text:sub(long_label_width + 1)
             if truncated_label then
-                table.insert(item.highlights, {
-                    "@comment",
-                    range = {
-                        short_label_width + (pretty_end == "(…)" and 1 or 0),
-                        short_label_width + (pretty_end == "(…)" and string.len("…)") or string.len("…")),
-                    },
-                })
+                if pretty_end == "(…)" then
+                    table.insert(item.highlights, {
+                        "@punctuation.bracket",
+                        range = {
+                            short_label_width,
+                            short_label_width + 1,
+                        },
+                    })
+                    table.insert(item.highlights, {
+                        "@comment",
+                        range = {
+                            short_label_width + 1,
+                            short_label_width + 4,
+                        },
+                    })
+                    table.insert(item.highlights, {
+                        "@punctuation.bracket",
+                        range = {
+                            short_label_width + 4,
+                            short_label_width + 5,
+                        },
+                    })
+                else -- pretty_end == "…)"
+                    table.insert(item.highlights, {
+                        "@comment",
+                        range = {
+                            short_label_width,
+                            short_label_width + 3,
+                        },
+                    })
+                    table.insert(item.highlights, {
+                        "@punctuation.bracket",
+                        range = {
+                            short_label_width + 3,
+                            short_label_width + 4,
+                        },
+                    })
+                end
             end
             cut_label(item, max_width, false)
         else
@@ -390,7 +421,11 @@ function M.apply_post_processing(completion_item, item, ls)
                 .. item.text:sub(long_label_width + 1)
             table.insert(item.highlights, {
                 "@comment",
-                range = { ascii_pos, ascii_pos + string.len("…)") - 1 },
+                range = { ascii_pos, ascii_pos + 3 },
+            })
+            table.insert(item.highlights, {
+                "@punctuation.bracket",
+                range = { ascii_pos + 3, ascii_pos + 4 },
             })
         end
     else
