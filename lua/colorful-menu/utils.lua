@@ -219,6 +219,32 @@ local function left_brace_one_more_than_right_brace(s)
     return left == right + 1
 end
 
+local ellipsis_bytes = #"…"
+
+local function add_truncation_highlights(highlights, start_index, pretty_end)
+    local offset = start_index
+
+    if pretty_end:sub(1, 1) == "(" then
+        table.insert(highlights, {
+            "@punctuation.bracket",
+            range = { offset, offset + 1 },
+        })
+        offset = offset + 1
+    end
+
+    table.insert(highlights, {
+        "@comment",
+        range = { offset, offset + ellipsis_bytes },
+    })
+
+    if pretty_end:sub(-1) == ")" then
+        table.insert(highlights, {
+            "@punctuation.bracket",
+            range = { offset + ellipsis_bytes, offset + ellipsis_bytes + 1 },
+        })
+    end
+end
+
 ---@param item CMHighlights
 ---@param max_width integer
 ---@param direct boolean -- without type info
@@ -236,14 +262,7 @@ local function cut_label(item, max_width, direct)
         item.text = truncated
         local truncated_width = #truncated
         remove_color_in_range(item, { left = truncated_width, right = math.huge })
-        table.insert(item.highlights, {
-            "@comment",
-            range = { truncated_width - 4, truncated_width - 1 },
-        })
-        table.insert(item.highlights, {
-            "@punctuation.bracket",
-            range = { truncated_width - 1, truncated_width },
-        })
+        add_truncation_highlights(item.highlights, truncated_width - (ellipsis_bytes + 1), "…)")
     else
         local truncated = vim.fn.strcharpart(text, 0, max_width - 1) .. "…"
         item.text = truncated
@@ -360,44 +379,7 @@ function M.apply_post_processing(completion_item, item, ls)
             shift_color_by(item, long_label_width - short_label_width - string.len(pretty_end), long_label_width)
             item.text = item.text:sub(1, short_label_width) .. pretty_end .. item.text:sub(long_label_width + 1)
             if truncated_label then
-                if pretty_end == "(…)" then
-                    table.insert(item.highlights, {
-                        "@punctuation.bracket",
-                        range = {
-                            short_label_width,
-                            short_label_width + 1,
-                        },
-                    })
-                    table.insert(item.highlights, {
-                        "@comment",
-                        range = {
-                            short_label_width + 1,
-                            short_label_width + 4,
-                        },
-                    })
-                    table.insert(item.highlights, {
-                        "@punctuation.bracket",
-                        range = {
-                            short_label_width + 4,
-                            short_label_width + 5,
-                        },
-                    })
-                else -- pretty_end == "…)"
-                    table.insert(item.highlights, {
-                        "@comment",
-                        range = {
-                            short_label_width,
-                            short_label_width + 3,
-                        },
-                    })
-                    table.insert(item.highlights, {
-                        "@punctuation.bracket",
-                        range = {
-                            short_label_width + 3,
-                            short_label_width + 4,
-                        },
-                    })
-                end
+                add_truncation_highlights(item.highlights, short_label_width, pretty_end)
             end
             cut_label(item, max_width, false)
         else
@@ -419,14 +401,7 @@ function M.apply_post_processing(completion_item, item, ls)
                 .. "…)"
                 .. string.rep(" ", short_label_width - ascii_pos)
                 .. item.text:sub(long_label_width + 1)
-            table.insert(item.highlights, {
-                "@comment",
-                range = { ascii_pos, ascii_pos + 3 },
-            })
-            table.insert(item.highlights, {
-                "@punctuation.bracket",
-                range = { ascii_pos + 3, ascii_pos + 4 },
-            })
+            add_truncation_highlights(item.highlights, ascii_pos, "…)")
         end
     else
         item.text = item.text:gsub("\7", " ")
