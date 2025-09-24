@@ -346,21 +346,28 @@ function M.apply_post_processing(completion_item, item, ls)
         local long_label_width, type_width = #long_label, #type
         local short_label_width = math.max(max_width - type_width - 2 - space_between, #label)
         local should_cut_all = short_label_width == #label
+        local removed_suffix = long_label:sub(short_label_width + 1)
         if should_cut_all then
             remove_color_in_range(item, { left = short_label_width, right = long_label_width })
-            local pretty_end = "(…)"
-            if label:sub(short_label_width, short_label_width) == ")" then
-                pretty_end = "…)"
+            local truncated_label = removed_suffix:match("%S") ~= nil
+            local pretty_end = ""
+            if truncated_label then
+                pretty_end = "(…)"
+                if label:sub(short_label_width, short_label_width) == ")" then
+                    pretty_end = "…)"
+                end
             end
             shift_color_by(item, long_label_width - short_label_width - string.len(pretty_end), long_label_width)
             item.text = item.text:sub(1, short_label_width) .. pretty_end .. item.text:sub(long_label_width + 1)
-            table.insert(item.highlights, {
-                "@comment",
-                range = {
-                    short_label_width + (pretty_end == "(…)" and 1 or 0),
-                    short_label_width + (pretty_end == "(…)" and string.len("…)") or string.len("…")),
-                },
-            })
+            if truncated_label then
+                table.insert(item.highlights, {
+                    "@comment",
+                    range = {
+                        short_label_width + (pretty_end == "(…)" and 1 or 0),
+                        short_label_width + (pretty_end == "(…)" and string.len("…)") or string.len("…")),
+                    },
+                })
+            end
             cut_label(item, max_width, false)
         else
             -- Caculate display_width and real byte diff.
