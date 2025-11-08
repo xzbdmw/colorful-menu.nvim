@@ -291,10 +291,26 @@ end
 ---@param item CMHighlights
 function M.validate_newline(completion_item, item)
     if string.find(item.text, "\n") ~= nil or string.find(item.text, "\r") ~= nil then
+        local newline_pos = string.find(item.text, "\n") or string.find(item.text, "\r")
+        local debug_info = {
+            label = completion_item.label,
+            kind = completion_item.kind,
+            detail = completion_item.detail,
+            labelDetails = completion_item.labelDetails,
+            documentation = completion_item.documentation,
+            insertText = completion_item.insertText,
+            filterText = completion_item.filterText,
+            sortText = completion_item.sortText,
+            newline_position = newline_pos,
+            text_preview = item.text:sub(1, math.min(100, #item.text)):gsub("\n", "\\n"):gsub("\r", "\\r"),
+        }
+
         vim.notify_once(
             '[colorful-menu.nvim]: Completion "'
                 .. completion_item.label
-                .. '" has new line character, please open an issue',
+                .. '" has new line character, please open an issue\n\n'
+                .. 'Debug info:\n'
+                .. vim.inspect(debug_info),
             vim.log.levels.WARN
         )
         return require("colorful-menu.languages.default").default_highlight(
