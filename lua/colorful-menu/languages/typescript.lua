@@ -4,6 +4,12 @@ local config = require("colorful-menu").config
 
 local M = {}
 
+local function one_line(s)
+    s = s:gsub("    ", "")
+    s = s:gsub("\n", " ")
+    return s
+end
+
 ---@param completion_item lsp.CompletionItem
 ---@param ls string
 ---@return CMHighlights
@@ -12,7 +18,7 @@ function M.ts_server(completion_item, ls)
     local detail = completion_item.detail
     local kind = completion_item.kind
     -- Combine label + detail for final display
-    local text = (detail and config.ls.ts_ls.extra_info_hl ~= false) and (label .. " " .. detail) or label
+    local text = (detail and config.ls.ts_ls.extra_info_hl ~= false) and (label .. " " .. one_line(detail)) or label
 
     if not kind then
         return utils.highlight_range(text, ls, 0, #text)
@@ -64,12 +70,6 @@ end
 ---@param ls string
 ---@return CMHighlights
 function M.vtsls(completion_item, ls)
-    local function one_line(s)
-        s = s:gsub("    ", "")
-        s = s:gsub("\n", " ")
-        return s
-    end
-
     local label = completion_item.label
 
     local kind = completion_item.kind
