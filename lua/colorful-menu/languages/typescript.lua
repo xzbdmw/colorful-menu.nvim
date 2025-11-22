@@ -25,8 +25,14 @@ function M.ts_server(completion_item, ls)
     end
 
     local highlight_name
-    if kind == Kind.Class or kind == Kind.Interface or kind == Kind.Enum then
+    if kind == Kind.Class then
         highlight_name = "@type"
+    elseif kind == Kind.Enum then
+        highlight_name = utils.hl_exist_or("@lsp.type.enum", "@type")
+    elseif kind == Kind.EnumMember then
+        highlight_name = utils.hl_exist_or("@lsp.type.enumMember", "@type")
+    elseif kind == Kind.Interface then
+        highlight_name = utils.hl_exist_or("@lsp.type.interface", "@type")
     elseif kind == Kind.Constructor then
         highlight_name = "@type"
     elseif kind == Kind.Constant then
@@ -78,8 +84,14 @@ function M.vtsls(completion_item, ls)
     end
 
     local highlight_name
-    if kind == Kind.Class or kind == Kind.Interface or kind == Kind.Enum then
+    if kind == Kind.Class then
         highlight_name = "@type"
+    elseif kind == Kind.Enum then
+        highlight_name = utils.hl_exist_or("@lsp.type.enum", "@type")
+    elseif kind == Kind.EnumMember then
+        highlight_name = utils.hl_exist_or("@lsp.type.enumMember", "@type")
+    elseif kind == Kind.Interface then
+        highlight_name = utils.hl_exist_or("@lsp.type.interface", "@type")
     elseif kind == Kind.Constructor then
         highlight_name = "@type"
     elseif kind == Kind.Constant then
