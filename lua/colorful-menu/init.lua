@@ -240,6 +240,29 @@ function M.blink_highlights(ctx)
     return nil
 end
 
+---@param item lsp.CompletionItem
+---@param client vim.lsp.Client
+function M.native_completion_highlight(item, client)
+    if not item then
+        return nil
+    end
+
+    vim.api.nvim_set_hl(0, "Strikethrough", { strikethrough = true })
+
+    local highlights = {}
+    local highlights_info = _highlights(item, client.name)
+    if highlights_info ~= nil then
+        for _, info in ipairs(highlights_info.highlights or {}) do
+            table.insert(highlights, {
+                group = item.deprecated and "@lsp.mod.deprecated" or info[1],
+            })
+        end
+    else
+        return nil
+    end
+    return { label = highlights_info.text, highlights = highlights[1].group }
+end
+
 ---@param completion_item lsp.CompletionItem
 ---@param ls string?
 ---@return CMHighlights?
