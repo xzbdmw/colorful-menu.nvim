@@ -139,7 +139,7 @@ local function _highlights(completion_item, ls)
     elseif ls == "intelephense" then
         item = require("colorful-menu.languages.php").intelephense(completion_item, ls)
         --
-    elseif ls == "roslyn" or ls == "easy_dotnet" then
+    elseif ls == "roslyn" or ls == "roslyn_ls" or ls == "easy_dotnet" then
         item = require("colorful-menu.languages.cs").roslyn(completion_item, ls)
         --
     elseif ls == "dartls" then
