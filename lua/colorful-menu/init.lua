@@ -57,7 +57,7 @@ M.config = {
         roslyn = {
             extra_info_hl = "@comment",
         },
-        -- The same applies to pyright/pylance
+        -- The same applies to pyright/pylance/ty
         basedpyright = {
             extra_info_hl = "@comment",
         },
@@ -145,7 +145,7 @@ local function _highlights(completion_item, ls)
     elseif ls == "dartls" then
         item = require("colorful-menu.languages.dart").dartls(completion_item, ls)
         --
-    elseif ls == "basedpyright" or ls == "pyright" or ls == "pylance" or ls == "pylsp" then
+    elseif ls == "basedpyright" or ls == "pyright" or ls == "pylance" or ls == "pylsp" or ls == "ty" then
         item = require("colorful-menu.languages.python").py(completion_item, ls)
         --
     else
