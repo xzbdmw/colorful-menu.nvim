@@ -4,12 +4,26 @@ local Kind = require("colorful-menu").Kind
 local M = {}
 
 ---@param completion_item lsp.CompletionItem
+---@param use_detail_fallback boolean?
+---@return string?
+local function extra_info(completion_item, use_detail_fallback)
+    local description = vim.tbl_get(completion_item, "labelDetails", "description")
+    if description ~= nil then
+        return description
+    end
+
+    -- `ty` may return the type in `detail` when label details are unavailable.
+    if use_detail_fallback then
+        return completion_item.detail
+    end
+end
+
+---@param completion_item lsp.CompletionItem
 ---@return CMHighlights
 local function pylsp(completion_item)
-    local path = vim.tbl_get(completion_item, "labelDetails", "description")
     local hls = require("colorful-menu.languages.default").default_highlight(
         completion_item,
-        path,
+        extra_info(completion_item),
         "python",
         config.ls.pylsp.extra_info_hl
     )
@@ -32,10 +46,9 @@ function M.py(completion_item, ls)
     if ls == "pylsp" then
         return pylsp(completion_item)
     else
-        local path = vim.tbl_get(completion_item, "labelDetails", "description")
         return require("colorful-menu.languages.default").default_highlight(
             completion_item,
-            path,
+            extra_info(completion_item, ls == "ty"),
             "python",
             config.ls.basedpyright.extra_info_hl
         )

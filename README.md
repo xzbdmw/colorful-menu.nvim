@@ -21,7 +21,7 @@ Has built-in support for
 - [**intelephense (PHP)**](#intelephense)
 - [**zls (Zig)**](#zls)
 - [**roslyn (C#)**](#roslyn)
-- [**basedpyright/pylance/pyright/pylsp (Python)**](#basedpyright)
+- [**basedpyright/pylance/pyright/pylsp/ty (Python)**](#basedpyright)
 - [**dartls (Dart)**](#dartls)
 
 For other languages, it defaults to use highlight group of item's kind.
@@ -101,9 +101,9 @@ return {
                 dartls = {
                     extra_info_hl = "@comment",
                 },
-                -- The same applies to pyright/pylance
+                -- The same applies to pyright/pylance/ty
                 basedpyright = {
-                    -- It is usually import path such as "os"
+                    -- Extra info for these servers, such as an import path or a type.
                     extra_info_hl = "@comment",
                 },
                 pylsp = {
@@ -383,6 +383,9 @@ Thanks to [@seblj](https://github.com/seblj)
 ![image](https://github.com/user-attachments/assets/60bdf5ad-86e9-410b-a390-e1e8e08d1377)
 
 # basedpyright
+The same configuration path also applies to `pyright`, `pylance`, and `ty`.
+`ty` may expose the displayed type info through `labelDetails.description` or `detail`, and colorful-menu handles both.
+
 ## before:
 <img width="756" alt="image" src="https://github.com/user-attachments/assets/9e422231-93ca-4746-b438-ba223d16d8db" />
 
