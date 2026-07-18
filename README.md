@@ -16,7 +16,7 @@ Has built-in support for
 - [**rust-analyzer (Rust)**](#rust-analyzer)
 - [**gopls (Go)**](#gopls)
 - [**typescript-language-server/vtsls (TypeScript)**](#typescript-language-server)
-- [**lua-ls (Lua)**](#lua_ls)
+- [**lua-ls/emmylua_ls (Lua)**](#lua_ls)
 - [**clangd (C/CPP)**](#clangd)
 - [**intelephense (PHP)**](#intelephense)
 - [**zls (Zig)**](#zls)
@@ -346,6 +346,8 @@ formatting = {
 <img width="713" alt="image" src="https://github.com/user-attachments/assets/0f68176f-d311-4e86-b848-592106a649ca" />
 
 # lua_ls
+`emmylua_ls` uses `ls.lua_ls.arguments_hl` and renders its completion label details.
+
 ## before:
 <img width="608" alt="image" src="https://github.com/user-attachments/assets/f8610a41-af17-458e-852d-f86c90e9860d" />
 

@@ -124,6 +124,9 @@ local function _highlights(completion_item, ls)
     elseif ls == "lua_ls" then
         item = require("colorful-menu.languages.lua").lua_ls(completion_item, ls)
         --
+    elseif ls == "emmylua_ls" then
+        item = require("colorful-menu.languages.lua").emmylua_ls(completion_item, ls)
+        --
     elseif ls == "clangd" then
         item = require("colorful-menu.languages.cpp").clangd(completion_item, ls)
         --
