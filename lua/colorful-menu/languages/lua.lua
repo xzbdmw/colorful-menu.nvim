@@ -64,4 +64,38 @@ function M.lua_ls(completion_item, ls)
     return vim_item
 end
 
+---@param completion_item lsp.CompletionItem
+---@param ls string
+---@return CMHighlights
+function M.emmylua_ls(completion_item, ls)
+    local vim_item = _lua_compute_completion_highlights(completion_item, ls)
+    local detail = vim.tbl_get(completion_item, "labelDetails", "detail")
+    if type(detail) == "string" and detail ~= "" then
+        local detail_start = #vim_item.text
+        vim_item.text = vim_item.text .. detail
+        local kind = completion_item.kind
+        local detail_hl = config.ls.fallback_extra_info_hl
+        if kind == Kind.Function or kind == Kind.Method or kind == Kind.Constructor then
+            detail_hl = config.ls.lua_ls.arguments_hl
+        end
+        table.insert(vim_item.highlights, {
+            detail_hl,
+            range = { detail_start, #vim_item.text },
+        })
+    end
+
+    local description = vim.tbl_get(completion_item, "labelDetails", "description")
+    if type(description) == "string" and description ~= "" then
+        local spaces = utils.align_spaces(vim_item.text, description)
+        local description_start = #vim_item.text + #spaces
+        vim_item.text = vim_item.text .. spaces .. description
+        table.insert(vim_item.highlights, {
+            config.ls.fallback_extra_info_hl,
+            range = { description_start, #vim_item.text },
+        })
+    end
+
+    return vim_item
+end
+
 return M
