@@ -15,7 +15,7 @@ string` part.
 Has built-in support for
 - [**rust-analyzer (Rust)**](#rust-analyzer)
 - [**gopls (Go)**](#gopls)
-- [**typescript-language-server/vtsls (TypeScript)**](#typescript-language-server)
+- [**typescript-language-server/vtsls (TypeScript), vue_ls (Vue)**](#typescript-language-server)
 - [**lua-ls (Lua)**](#lua_ls)
 - [**clangd (C/CPP)**](#clangd)
 - [**intelephense (PHP)**](#intelephense)
@@ -353,6 +353,8 @@ formatting = {
 <img width="688" alt="image" src="https://github.com/user-attachments/assets/08e20d76-d57e-4953-92e2-87de8e862a04" />
 
 # typescript-language-server
+`vue_ls` uses the same completion formatting and `ls.ts_ls.extra_info_hl` setting.
+
 ## before:
 <img width="383" alt="image" src="https://github.com/user-attachments/assets/a787d034-6b33-4ecb-8512-bfb8e2dfa7b3" />
 

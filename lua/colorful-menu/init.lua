@@ -127,7 +127,13 @@ local function _highlights(completion_item, ls)
     elseif ls == "clangd" then
         item = require("colorful-menu.languages.cpp").clangd(completion_item, ls)
         --
-    elseif ls == "typescript-language-server" or ls == "ts_ls" or ls == "tsserver" or ls == "typescript-tools" then
+    elseif
+        ls == "typescript-language-server"
+        or ls == "ts_ls"
+        or ls == "tsserver"
+        or ls == "typescript-tools"
+        or ls == "vue_ls"
+    then
         item = require("colorful-menu.languages.typescript").ts_server(completion_item, ls)
         --
     elseif ls == "vtsls" then
