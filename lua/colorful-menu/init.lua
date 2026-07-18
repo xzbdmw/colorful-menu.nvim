@@ -145,6 +145,9 @@ local function _highlights(completion_item, ls)
     elseif ls == "dartls" then
         item = require("colorful-menu.languages.dart").dartls(completion_item, ls)
         --
+    elseif ls == "dockerls" then
+        item = require("colorful-menu.languages.docker").dockerls(completion_item)
+        --
     elseif ls == "basedpyright" or ls == "pyright" or ls == "pylance" or ls == "pylsp" then
         item = require("colorful-menu.languages.python").py(completion_item, ls)
         --
